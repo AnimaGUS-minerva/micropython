@@ -91,6 +91,12 @@ static void eth_event_handler(void *arg, esp_event_base_t event_base,
 }
 
 STATIC mp_obj_t get_lan(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    // @@ --------
+    ESP_LOGE("@@", "[network_lan.c] get_lan() ^^");
+    if (n_args == 0) {
+        return mp_const_none; // @@ TEMP
+    }
+    // @@ --------
     lan_if_obj_t *self = &lan_obj;
 
     if (self->initialized) {

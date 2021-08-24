@@ -44,6 +44,12 @@ def setup():
 #esp.osdebug(None)
 #import webrepl
 #webrepl.start()
+
+# @@
+print("@@ start: custom setup ('micropython/ports/esp32/modules/inisetup.py')")
+import network
+network.LAN()  # no args; custom debug
+print("@@ end: custom setup")
 """
         )
     return vfs
