@@ -36,6 +36,11 @@ def setup():
     uos.VfsLfs2.mkfs(bdev)
     vfs = uos.VfsLfs2(bdev)
     uos.mount(vfs, "/")
+
+    # @@
+    with open("foo.py", "w") as f:
+        f.write("print('hello from foo.py')")
+
     with open("boot.py", "w") as f:
         f.write(
             """\
@@ -46,10 +51,16 @@ def setup():
 #webrepl.start()
 
 # @@
-print("@@ start: custom setup ('micropython/ports/esp32/modules/inisetup.py')")
-import network
-network.LAN()  # no args; custom debug
-print("@@ end: custom setup")
+print("@@ start: debug ('micropython/ports/esp32/modules/inisetup.py')")
+
+import lan  # call 'lan.py'
+
+import os
+print(os.listdir())
+
+exec(open('foo.py').read())
+
+print("@@ end: debug")
 """
         )
     return vfs
