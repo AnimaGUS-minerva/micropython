@@ -53,13 +53,11 @@ def setup():
 # @@
 print("@@ start: debug ('micropython/ports/esp32/modules/inisetup.py')")
 
-import lan  # call 'lan.py'
-
 import os
 print(os.listdir())
-
 exec(open('foo.py').read())
 
+import lan  # call 'lan.py'
 print("@@ end: debug")
 """
         )
