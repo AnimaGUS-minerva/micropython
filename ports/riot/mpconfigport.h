@@ -27,6 +27,23 @@
 
 #include "irq.h"
 
+#ifdef CUSTOM_BOARD_ESP32
+// https://github.com/micropython/micropython#the-unix-version
+// https://github.com/RIOT-OS/RIOT/blob/master/pkg/micropython/doc.txt
+// https://github.com/kaspar030/micropython/blob/add_riot_port/ports/esp32/mpconfigport.h
+//---- @@
+// object representation and NLR handling
+#define MICROPY_OBJ_REPR                    (MICROPY_OBJ_REPR_A)
+#define MICROPY_NLR_SETJMP                  (1)
+
+// @@ CHECK: Getting a new warning during build after defining `MICROPY_NLR_SETJMP`
+// .../bin/esp32-wroom-32/pkg/micropython/lib/utils/pyexec.c:64:14: warning: variable 'start' might be clobbered by 'longjmp' or 'vfork' [-Wclobbered]
+//     uint32_t start = 0;
+//              ^
+// .../bin/esp32-wroom-32/pkg/micropython/lib/utils/pyexec.c: At top level:
+// cc1: warning: unrecognized command line option '-Wno-implicit-fallthrough'
+#endif
+
 // Usually passed from Makefile
 #ifndef MICROPY_HEAP_SIZE
 #define MICROPY_HEAP_SIZE (16 * 1024)

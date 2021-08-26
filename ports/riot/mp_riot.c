@@ -11,11 +11,15 @@
 #include "thread.h"
 #include "xtimer.h"
 
+#ifdef CUSTOM_USE_LIBFOO
+#include "foo.h"
+#endif
+
 #define MP_RIOT_TICKLEN 10000U
 
 static void _mp_riot_tick(void *arg)
 {
-    mp_handle_pending();
+    mp_handle_pending(true);
     xtimer_set(arg, MP_RIOT_TICKLEN);
 }
 
@@ -29,10 +33,12 @@ void mp_do_str(const char *src, size_t len) {
     }
 
     nlr_buf_t nlr;
+    // @@ For `nlr_push()` to not crash, make sure `MICROPY_NLR_SETJMP`
+    //    is defined in 'ports/riot/mpconfigport.h'
     if (nlr_push(&nlr) == 0) {
         qstr source_name = lex->source_name;
         mp_parse_tree_t parse_tree = mp_parse(lex, MP_PARSE_FILE_INPUT);
-        mp_obj_t module_fun = mp_compile(&parse_tree, source_name, MP_EMIT_OPT_NONE, false);
+        mp_obj_t module_fun = mp_compile(&parse_tree, source_name, false);
         mp_call_function_0(module_fun);
         nlr_pop();
     } else {
@@ -48,6 +54,13 @@ void mp_riot_init(char* heap, size_t heap_size) {
 
     mp_init();
     //_mp_riot_tick(&_tick_timer);
+
+#ifdef CUSTOM_USE_LIBFOO
+    printf("@@ mp_riot_init() in micropython/ports/riot/mp_riot.c: before calling into Rust\n");
+    init_logger();
+    test_logger();
+    printf("@@ mp_riot_init(): after calling into Rust\n");
+#endif
 }
 
 mp_lexer_t *mp_lexer_new_from_file(const char *filename) {
@@ -73,6 +86,7 @@ void nlr_jump_fail(void *val) {
     while(1) {}
 }
 
+#ifndef CUSTOM_BOARD_ESP32
 static void _call_from_isr(mp_obj_t callback)
 {
     char *saved_stack_top = MP_STATE_THREAD(stack_top);
@@ -94,8 +108,13 @@ static void _call_from_isr(mp_obj_t callback)
     MP_STATE_THREAD(stack_top) = saved_stack_top;
     MP_STATE_THREAD(stack_limit) = saved_stack_limit;
 }
+#endif
 
 void mp_riot_isr_callback(void *arg)
 {
+#ifdef CUSTOM_BOARD_ESP32
+    puts("@@ FIXME: mp_riot_isr_callback(): SKIPPING `_call_from_isr()` to workaround linker error due to the missing `thread_isr_stack_start` symbol");
+#else
     _call_from_isr(*(mp_obj_t *)arg);
+#endif
 }

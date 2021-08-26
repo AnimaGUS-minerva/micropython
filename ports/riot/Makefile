@@ -34,11 +34,25 @@ CFLAGS += -std=gnu99 -DNDEBUG $(INC) $(Wno)
 
 FROZEN_DIR = scripts
 
+ifeq ($(CUSTOM_BOARD),ESP32)
+SRC_C = $(wildcard *.c) \
+	lib/utils/pyexec.c \
+	lib/mp-readline/readline.c \
+	ports/esp32/gccollect.c \
+	$(BUILD)/frozen.c
+else ifeq ($(CUSTOM_BOARD),NATIVE)
 SRC_C = $(wildcard *.c) \
 	lib/utils/pyexec.c \
 	lib/mp-readline/readline.c \
 	ports/unix/gccollect.c \
-	$(BUILD)/frozen.c \
+	$(BUILD)/frozen.c
+else
+SRC_C = $(wildcard *.c) \
+	lib/utils/pyexec.c \
+	lib/mp-readline/readline.c \
+	ports/unix/gccollect.c \
+	$(BUILD)/frozen.c
+endif
 
 # List of sources for qstr extraction
 SRC_QSTR += $(SRC_C)
