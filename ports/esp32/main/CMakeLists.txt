@@ -133,6 +133,11 @@ elseif(IDF_TARGET STREQUAL "esp32s3")
     list(APPEND IDF_COMPONENTS tinyusb)
 endif()
 
+# @@
+if("$ENV{CUSTOM_USE_LIBFOO}" STREQUAL "1")
+    set(LIBFOO_DIR ${MICROPY_DIR}/../../libfoo-rs/include)
+endif()
+
 # Register the main IDF component.
 idf_component_register(
     SRCS
@@ -147,6 +152,7 @@ idf_component_register(
         ${MICROPY_PORT_DIR}
         ${MICROPY_BOARD_DIR}
         ${CMAKE_BINARY_DIR}
+        ${LIBFOO_DIR}  # @@
     REQUIRES
         ${IDF_COMPONENTS}
 )
@@ -179,6 +185,16 @@ target_compile_options(${MICROPY_TARGET} PUBLIC
 target_link_libraries(${MICROPY_TARGET} micropy_extmod_btree)
 target_link_libraries(${MICROPY_TARGET} usermod)
 
+#---- @@ Add the custom Rust static library if requested
+message(STATUS "CUSTOM_USE_LIBFOO: $ENV{CUSTOM_USE_LIBFOO}")
+
+if("$ENV{CUSTOM_USE_LIBFOO}" STREQUAL "1")
+    add_compile_definitions(CUSTOM_USE_LIBFOO=$ENV{CUSTOM_USE_LIBFOO})
+    add_library(foo STATIC IMPORTED)
+    set_property(TARGET foo PROPERTY IMPORTED_LOCATION "${MICROPY_DIR}/../../libfoo-rs/libfoo.a")
+    target_link_libraries(${MICROPY_TARGET} foo)
+endif()
+#----
 
 # Collect all of the include directories and compile definitions for the IDF components.
 foreach(comp ${IDF_COMPONENTS})

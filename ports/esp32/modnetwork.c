@@ -54,6 +54,10 @@
 
 #include "modnetwork.h"
 
+#ifdef CUSTOM_USE_LIBFOO
+#include "foo.h"
+#endif
+
 #if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(4, 1, 0)
 #define DNS_MAIN TCPIP_ADAPTER_DNS_MAIN
 #else
@@ -287,7 +291,11 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(get_wlan_obj, 0, 1, get_wlan);
 STATIC mp_obj_t esp_initialize() {
     static int initialized = 0;
     if (!initialized) {
-        ESP_LOGD("modnetwork", "Initializing TCP/IP");
+#ifdef CUSTOM_USE_LIBFOO
+        init_logger();
+        test_logger();
+#endif
+        ESP_LOGE("modnetwork", "Initializing TCP/IP");
         tcpip_adapter_init();
         ESP_LOGD("modnetwork", "Initializing Event Loop");
         ESP_EXCEPTIONS(esp_event_loop_init(event_handler, NULL));
