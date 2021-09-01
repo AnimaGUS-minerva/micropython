@@ -29,11 +29,35 @@
 
 #include "py/runtime.h"
 
-#include "thread.h"
+#include "stdio.h"
+#include "string.h"
+#include "voucher.h"
 
 STATIC mp_obj_t mod_demo(void) {
     printf("mod_demo(): ^^\n");
-    return MP_OBJ_NEW_SMALL_INT(thread_getpid());
+
+    int input = 4;
+    int output = square(input);
+    printf("input: %d output: %d\n", input, output);
+
+    if (1) {
+        uint8_t mac[6] = { 0xA0, 0xB1, 0xC2, 0xD3, 0xE4, 0xF5 };
+        if (0) {
+            uint8_t mac2[6] = { 0x00, 0xB1, 0xC2, 0xD3, 0xE4, 0xF5 };
+            return mp_obj_new_bool(memcmp(mac2, mac, sizeof(mac)) == 0);
+        }
+        return mp_obj_new_bytes(mac, sizeof(mac));
+    } else {
+        mp_obj_t tuple[5] = {
+            MP_OBJ_NEW_SMALL_INT(output),
+            mp_obj_new_bool(1 == 0),
+            mp_const_none,
+            mp_const_true,
+            mp_const_false,
+        };
+        printf("sizeof(tuple): %d\n", sizeof(tuple));
+        return mp_obj_new_tuple(5, tuple);
+    }
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_demo_obj, mod_demo);
 
