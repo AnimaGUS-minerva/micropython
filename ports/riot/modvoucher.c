@@ -4,6 +4,7 @@
  * The MIT License (MIT)
  *
  * Copyright (c) 2017 Linaro Limited
+ * Copyright (c) 2021 ANIMA Minerva toolkit
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,20 +37,43 @@
 STATIC mp_obj_t mod_demo(void) {
     printf("mod_demo(): ^^\n");
 
-    int input = 4;
-    int output = square(input);
-    printf("input: %d output: %d\n", input, output);
+    if (1) {
+        int input = 4;
+        int output = vch_square(input);
+        printf("input: %d output: %d\n", input, output);
+    }
+
+    if (1) {
+        uint8_t *data;
+        size_t sz;
+
+        sz = vch_get_voucher_jada(&data);
+        printf("data: %p sz: %d\n", data, sz);
+        mp_obj_t vj = mp_obj_new_bytes(data, sz);
+
+        sz = vch_get_voucher_F2_00_02(&data);
+        printf("data: %p sz: %d\n", data, sz);
+        mp_obj_t vf2 = mp_obj_new_bytes(data, sz);
+
+        sz = vch_get_masa_pem_F2_00_02(&data);
+        printf("data: %p sz: %d\n", data, sz);
+        mp_obj_t mf2 = mp_obj_new_bytes(data, sz);
+
+        mp_obj_t tuple[3] = { vj, vf2, mf2 };
+        return mp_obj_new_tuple(3, tuple);
+    }
 
     if (1) {
         uint8_t mac[6] = { 0xA0, 0xB1, 0xC2, 0xD3, 0xE4, 0xF5 };
-        if (0) {
-            uint8_t mac2[6] = { 0x00, 0xB1, 0xC2, 0xD3, 0xE4, 0xF5 };
-            return mp_obj_new_bool(memcmp(mac2, mac, sizeof(mac)) == 0);
-        }
-        return mp_obj_new_bytes(mac, sizeof(mac));
+        uint8_t mac2[6] = { 0x00, 0xB1, 0xC2, 0xD3, 0xE4, 0xF5 };
+        mp_obj_t tuple[2] = {
+            mp_obj_new_bytes(mac, sizeof(mac)),
+            mp_obj_new_bool(memcmp(mac2, mac, sizeof(mac)) == 0),
+        };
+        return mp_obj_new_tuple(2, tuple);
     } else {
         mp_obj_t tuple[5] = {
-            MP_OBJ_NEW_SMALL_INT(output),
+            MP_OBJ_NEW_SMALL_INT(42),
             mp_obj_new_bool(1 == 0),
             mp_const_none,
             mp_const_true,
