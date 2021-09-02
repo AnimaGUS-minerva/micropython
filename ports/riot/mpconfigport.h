@@ -95,7 +95,9 @@
 #define MICROPY_PY_UTIME                (1)
 #define MICROPY_PY_UTIME_MP_HAL         (1)
 #define MICROPY_PY_RIOT                 (1)
+#ifdef CUSTOM_BOARD
 #define MICROPY_PY_VOUCHER              (1)
+#endif
 #define MICROPY_PY_XTIMER               (1)
 #define MICROPY_PY_SYS_MODULES          (1)
 #define MICROPY_LONGINT_IMPL            (MICROPY_LONGINT_IMPL_LONGLONG)
@@ -130,7 +132,9 @@ extern const struct _mp_obj_module_t mp_module_machine;
 extern const struct _mp_obj_module_t mp_module_time;
 extern const struct _mp_obj_module_t mp_module_usocket;
 extern const struct _mp_obj_module_t mp_module_riot;
+#ifdef CUSTOM_BOARD
 extern const struct _mp_obj_module_t mp_module_voucher;
+#endif
 extern const struct _mp_obj_module_t mp_module_xtimer;
 
 #if MICROPY_PY_USOCKET
