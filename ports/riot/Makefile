@@ -40,7 +40,6 @@ SRC_C = $(wildcard *.c) \
 	lib/utils/pyexec.c \
 	lib/mp-readline/readline.c \
 	ports/esp32/gccollect.c \
-	../../../../custom/modvoucher.c \
 	$(BUILD)/frozen.c
 else ifeq ($(CUSTOM_BOARD),native)
 SRC_C = $(wildcard *.c) \
@@ -48,7 +47,6 @@ SRC_C = $(wildcard *.c) \
 	lib/mp-readline/readline.c \
 	ports/unix/gccollect.c \
 	lib/utils/gchelper_generic.c \
-	../../../../custom/modvoucher.c \
 	$(BUILD)/frozen.c
 endif
 
