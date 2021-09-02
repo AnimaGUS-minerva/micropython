@@ -37,57 +37,74 @@
 STATIC mp_obj_t mod_demo(void) {
     printf("mod_demo(): ^^\n");
 
-    if (1) {
+    return mp_const_false;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_demo_obj, mod_demo);
+
+STATIC mp_obj_t mod_test_ffi(void) {
+    printf("mod_test_ffi(): ^^\n");
+
+    { // basic stuff
         int input = 4;
         int output = vch_square(input);
         printf("input: %d output: %d\n", input, output);
     }
 
-    if (1) {
-        uint8_t *data;
-        size_t sz;
+    // return misc types
 
-        sz = vch_get_voucher_jada(&data);
-        printf("data: %p sz: %d\n", data, sz);
-        mp_obj_t vj = mp_obj_new_bytes(data, sz);
+    uint8_t mac[6] = { 0xA0, 0xB1, 0xC2, 0xD3, 0xE4, 0xF5 };
+    uint8_t mac2[6] = { 0x00, 0xB1, 0xC2, 0xD3, 0xE4, 0xF5 };
 
-        sz = vch_get_voucher_F2_00_02(&data);
-        printf("data: %p sz: %d\n", data, sz);
-        mp_obj_t vf2 = mp_obj_new_bytes(data, sz);
+#define SZ 7
+    mp_obj_t tuple[SZ] = {
+        MP_OBJ_NEW_SMALL_INT(42), // 42
+        mp_obj_new_bool(1 == 0), // False
+        mp_const_none, // None
+        mp_const_true, // True
+        mp_const_false, // False
+        mp_obj_new_bytes(mac, sizeof(mac)), // b'\xa0\xb1\xc2\xd3\xe4\xf5'
+        mp_obj_new_bool(memcmp(mac2, mac, sizeof(mac)) == 0), // False
+    };
+    printf("sizeof(tuple): %d\n", sizeof(tuple));
 
-        sz = vch_get_masa_pem_F2_00_02(&data);
-        printf("data: %p sz: %d\n", data, sz);
-        mp_obj_t mf2 = mp_obj_new_bytes(data, sz);
-
-        mp_obj_t tuple[3] = { vj, vf2, mf2 };
-        return mp_obj_new_tuple(3, tuple);
-    }
-
-    if (1) {
-        uint8_t mac[6] = { 0xA0, 0xB1, 0xC2, 0xD3, 0xE4, 0xF5 };
-        uint8_t mac2[6] = { 0x00, 0xB1, 0xC2, 0xD3, 0xE4, 0xF5 };
-        mp_obj_t tuple[2] = {
-            mp_obj_new_bytes(mac, sizeof(mac)),
-            mp_obj_new_bool(memcmp(mac2, mac, sizeof(mac)) == 0),
-        };
-        return mp_obj_new_tuple(2, tuple);
-    } else {
-        mp_obj_t tuple[5] = {
-            MP_OBJ_NEW_SMALL_INT(42),
-            mp_obj_new_bool(1 == 0),
-            mp_const_none,
-            mp_const_true,
-            mp_const_false,
-        };
-        printf("sizeof(tuple): %d\n", sizeof(tuple));
-        return mp_obj_new_tuple(5, tuple);
-    }
+    return mp_obj_new_tuple(SZ, tuple);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_demo_obj, mod_demo);
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_test_ffi_obj, mod_test_ffi);
+
+STATIC mp_obj_t mod_get_voucher_jada(void) {
+    uint8_t *data;
+    size_t sz;
+
+    sz = vch_get_voucher_jada(&data);
+    return mp_obj_new_bytes(data, sz);
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_voucher_jada_obj, mod_get_voucher_jada);
+
+STATIC mp_obj_t mod_get_voucher_F2_00_02(void) {
+    uint8_t *data;
+    size_t sz;
+
+    sz = vch_get_voucher_F2_00_02(&data);
+    return mp_obj_new_bytes(data, sz);
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_voucher_F2_00_02_obj, mod_get_voucher_F2_00_02);
+
+STATIC mp_obj_t mod_get_masa_pem_F2_00_02(void) {
+    uint8_t *data;
+    size_t sz;
+
+    sz = vch_get_masa_pem_F2_00_02(&data);
+    return mp_obj_new_bytes(data, sz);
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_masa_pem_F2_00_02_obj, mod_get_masa_pem_F2_00_02);
 
 STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_voucher) },
     { MP_ROM_QSTR(MP_QSTR_demo), MP_ROM_PTR(&mod_demo_obj) },
+    { MP_ROM_QSTR(MP_QSTR_test_ffi), MP_ROM_PTR(&mod_test_ffi_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_voucher_jada), MP_ROM_PTR(&mod_get_voucher_jada_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_voucher_F2_00_02), MP_ROM_PTR(&mod_get_voucher_F2_00_02_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_masa_pem_F2_00_02), MP_ROM_PTR(&mod_get_masa_pem_F2_00_02_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(mp_module_voucher_globals, mp_module_voucher_globals_table);
