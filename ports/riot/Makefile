@@ -34,14 +34,14 @@ CFLAGS += -std=gnu99 -DNDEBUG $(INC) $(Wno)
 
 FROZEN_DIR = scripts
 
-CUSTOM_BOARD ?= NATIVE
-ifeq ($(CUSTOM_BOARD),ESP32)
+CUSTOM_BOARD ?= native
+ifeq ($(CUSTOM_BOARD),esp32)
 SRC_C = $(wildcard *.c) \
 	lib/utils/pyexec.c \
 	lib/mp-readline/readline.c \
 	ports/esp32/gccollect.c \
 	$(BUILD)/frozen.c
-else ifeq ($(CUSTOM_BOARD),NATIVE)
+else ifeq ($(CUSTOM_BOARD),native)
 SRC_C = $(wildcard *.c) \
 	lib/utils/pyexec.c \
 	lib/mp-readline/readline.c \
