@@ -15,7 +15,7 @@
 
 static void _mp_riot_tick(void *arg)
 {
-    mp_handle_pending();
+    mp_handle_pending(true);
     xtimer_set(arg, MP_RIOT_TICKLEN);
 }
 
@@ -32,7 +32,7 @@ void mp_do_str(const char *src, size_t len) {
     if (nlr_push(&nlr) == 0) {
         qstr source_name = lex->source_name;
         mp_parse_tree_t parse_tree = mp_parse(lex, MP_PARSE_FILE_INPUT);
-        mp_obj_t module_fun = mp_compile(&parse_tree, source_name, MP_EMIT_OPT_NONE, false);
+        mp_obj_t module_fun = mp_compile(&parse_tree, source_name, false);
         mp_call_function_0(module_fun);
         nlr_pop();
     } else {

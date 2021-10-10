@@ -4,7 +4,7 @@ all:
 
 .PHONY: all
 
-BUILD ?= $(PKGDIRBASE)/micropython
+BUILD ?= $(CURDIR)/../..
 CROSS_COMPILE = $(PREFIX)
 
 # re-use RIOT's variant of verbose build
@@ -23,7 +23,7 @@ QSTR_DEFS = qstrdefsport.h
 include $(TOP)/py/py.mk
 
 INC =  -I$(TOP)/ports/riot
-INC += -I$(TOP)/lib/mp-readline
+INC += -I$(TOP)/shared/readline
 #INC += -I../stmhal
 INC += -I$(BUILD)
 INC += $(INCLUDES)
@@ -35,9 +35,10 @@ CFLAGS += -std=gnu99 -DNDEBUG $(INC) $(Wno)
 FROZEN_DIR = scripts
 
 SRC_C = $(wildcard *.c) \
-	lib/utils/pyexec.c \
-	lib/mp-readline/readline.c \
+	shared/runtime/pyexec.c \
+	shared/readline/readline.c \
 	ports/unix/gccollect.c \
+	shared/runtime/gchelper_generic.c \
 	$(BUILD)/frozen.c \
 
 # List of sources for qstr extraction
