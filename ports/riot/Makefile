@@ -46,9 +46,9 @@ SRC_QSTR += $(SRC_C)
 
 OBJ = $(PY_O) $(addprefix $(BUILD)/, $(SRC_C:.c=.o) $(SRC_S:.s=.o))
 
-all: $(BINDIR)/micropython.a
+all: $(BINDIR)/riot.a
 
-$(BINDIR)/micropython.a: $(OBJ)
+$(BINDIR)/riot.a: $(OBJ)
 	$(AD)$(AR) $(ARFLAGS) $@ $?
 
 include $(TOP)/py/mkrules.mk

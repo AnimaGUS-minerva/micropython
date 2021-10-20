@@ -4,7 +4,7 @@ MP_RIOT_HEAPSIZE ?= 16384U
 CFLAGS += -DMP_RIOT_HEAPSIZE=$(MP_RIOT_HEAPSIZE)
 
 # include archive
-ARCHIVES += $(BINDIR)/micropython.a
+ARCHIVES += $(BINDIR)/riot.a
 
 # The port currently doesn't build with llvm
 TOOLCHAINS_BLACKLIST += llvm
