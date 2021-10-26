@@ -8,11 +8,12 @@ BOARD ?= native
 RIOTBASE ?= $(CURDIR)/../..
 
 MP_BASE = $(CURDIR)/../../..
+export MP_BASE
 INCLUDES += -I$(MP_BASE)
 INCLUDES += -I$(MP_BASE)/ports/riot
 
-USEMODULE += riot
-EXTERNAL_MODULE_DIRS += $(MP_BASE)/ports
+USEMODULE += micropython
+EXTERNAL_MODULE_DIRS += $(MP_BASE)/ports/riot/modules
 
 MP_RIOT_HEAPSIZE = 131072U
 
