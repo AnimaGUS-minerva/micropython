@@ -2,7 +2,7 @@
 # set up some of mkenv.py's settings
 all:
 
-.PHONY: all
+.PHONY: all main
 
 BUILD ?= $(CURDIR)/../..
 CROSS_COMPILE = $(PREFIX)
@@ -46,9 +46,26 @@ SRC_QSTR += $(SRC_C)
 
 OBJ = $(PY_O) $(addprefix $(BUILD)/, $(SRC_C:.c=.o) $(SRC_S:.s=.o))
 
-all: $(BINDIR)/micropython.a
+BUILD_MAIN ?= 1
+ifeq ($(BUILD_MAIN),1)
+ALL = main
+
+GENHDR_DIR = ../../genhdr
+
+main:
+	@if [ ! -e RIOT ]; then git clone https://github.com/RIOT-OS/RIOT; fi
+	mkdir -p $(GENHDR_DIR) && touch $(GENHDR_DIR)/qstrdefs.generated.h
+	RIOTBASE=$(CURDIR)/RIOT make -C main
+
+clean:
+	rm -rf main/bin $(GENHDR_DIR) ../../frozen.c ../../media
+else
+ALL = $(BINDIR)/micropython.a
 
 $(BINDIR)/micropython.a: $(OBJ)
 	$(AD)$(AR) $(ARFLAGS) $@ $?
 
 include $(TOP)/py/mkrules.mk
+endif
+
+all: $(ALL)
