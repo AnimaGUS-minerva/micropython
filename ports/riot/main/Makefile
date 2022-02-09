@@ -15,6 +15,23 @@ INCLUDES += -I$(MP_BASE)/ports/riot
 USEMODULE += micropython
 EXTERNAL_MODULE_DIRS += $(MP_BASE)/ports/riot/modules
 
+#---- @@
+CUSTOM_BOARD ?= native
+
+ifeq ($(CUSTOM_BOARD),esp32)
+    CFLAGS += -DCUSTOM_BOARD -DCUSTOM_BOARD_ESP32
+else ifeq ($(CUSTOM_BOARD),native)
+    CFLAGS += -DCUSTOM_BOARD -DCUSTOM_BOARD_NATIVE
+endif
+
+INCLUDES += -I$(MP_BASE)/../include
+ifeq ($(CUSTOM_BOARD),esp32)
+    ARCHIVES += $(MP_BASE)/../target/xtensa-esp32-none-elf/release/libvoucher.a
+else ifeq ($(CUSTOM_BOARD),native)
+    ARCHIVES += $(MP_BASE)/../target/i686-unknown-linux-gnu/release/libvoucher.a
+endif
+#---- @@
+
 MP_RIOT_HEAPSIZE = 131072U
 
 # include boot.py as header

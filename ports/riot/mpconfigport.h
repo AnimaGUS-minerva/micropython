@@ -27,6 +27,23 @@
 
 #include "irq.h"
 
+#ifdef CUSTOM_BOARD_ESP32
+// https://github.com/micropython/micropython#the-unix-version
+// https://github.com/RIOT-OS/RIOT/blob/master/pkg/micropython/doc.txt
+// https://github.com/kaspar030/micropython/blob/add_riot_port/ports/esp32/mpconfigport.h
+//---- @@
+// object representation and NLR handling
+#define MICROPY_OBJ_REPR                    (MICROPY_OBJ_REPR_A)
+#define MICROPY_NLR_SETJMP                  (1)
+
+// @@ CHECK: Getting a new warning during build after defining `MICROPY_NLR_SETJMP`
+// .../bin/esp32-wroom-32/pkg/micropython/lib/utils/pyexec.c:64:14: warning: variable 'start' might be clobbered by 'longjmp' or 'vfork' [-Wclobbered]
+//     uint32_t start = 0;
+//              ^
+// .../bin/esp32-wroom-32/pkg/micropython/lib/utils/pyexec.c: At top level:
+// cc1: warning: unrecognized command line option '-Wno-implicit-fallthrough'
+#endif
+
 // Usually passed from Makefile
 #ifndef MICROPY_HEAP_SIZE
 #define MICROPY_HEAP_SIZE (16 * 1024)
@@ -78,6 +95,9 @@
 #define MICROPY_PY_UTIME                (1)
 #define MICROPY_PY_UTIME_MP_HAL         (1)
 #define MICROPY_PY_RIOT                 (1)
+#ifdef CUSTOM_BOARD
+#define MICROPY_PY_VOUCHER              (1)
+#endif
 #define MICROPY_PY_XTIMER               (1)
 #define MICROPY_PY_SYS_MODULES          (1)
 #define MICROPY_LONGINT_IMPL            (MICROPY_LONGINT_IMPL_LONGLONG)
@@ -112,6 +132,9 @@ extern const struct _mp_obj_module_t mp_module_machine;
 extern const struct _mp_obj_module_t mp_module_time;
 extern const struct _mp_obj_module_t mp_module_usocket;
 extern const struct _mp_obj_module_t mp_module_riot;
+#ifdef CUSTOM_BOARD
+extern const struct _mp_obj_module_t mp_module_voucher;
+#endif
 extern const struct _mp_obj_module_t mp_module_xtimer;
 
 #if MICROPY_PY_USOCKET
@@ -138,6 +161,13 @@ extern const struct _mp_obj_module_t mp_module_xtimer;
 #define MICROPY_PY_RIOT_DEF
 #endif
 
+#if MICROPY_PY_VOUCHER
+#define MICROPY_PY_VOUCHER_DEF \
+        { MP_ROM_QSTR(MP_QSTR_voucher), MP_ROM_PTR(&mp_module_voucher) },
+#else
+#define MICROPY_PY_VOUCHER_DEF
+#endif
+
 #if MICROPY_PY_XTIMER
 #define MICROPY_PY_XTIMER_DEF \
         { MP_ROM_QSTR(MP_QSTR_xtimer), MP_ROM_PTR(&mp_module_xtimer) },
@@ -150,6 +180,7 @@ extern const struct _mp_obj_module_t mp_module_xtimer;
     MICROPY_PY_USOCKET_DEF \
     MICROPY_PY_UTIME_DEF \
     MICROPY_PY_RIOT_DEF \
+    MICROPY_PY_VOUCHER_DEF \
     MICROPY_PY_XTIMER_DEF
 
 #define MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS \
