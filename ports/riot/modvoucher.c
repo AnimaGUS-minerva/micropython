@@ -36,7 +36,7 @@
 #include "voucher.h" // via minerva_voucher crate
 
 STATIC mp_obj_t mod_demo(void) {
-    printf("[custom/modvoucher.c] mod_demo(): ^^\n");
+    printf("[modvoucher.c] mod_demo(): ^^\n");
 
     // ...
 

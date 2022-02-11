@@ -34,12 +34,21 @@ CFLAGS += -std=gnu99 -DNDEBUG $(INC) $(Wno)
 
 FROZEN_DIR = scripts
 
+CUSTOM_BOARD ?= native
+ifeq ($(CUSTOM_BOARD),esp32)
+SRC_C = $(wildcard *.c) \
+	shared/runtime/pyexec.c \
+	shared/readline/readline.c \
+	ports/esp32/gccollect.c \
+	$(BUILD)/frozen.c
+else ifeq ($(CUSTOM_BOARD),native)
 SRC_C = $(wildcard *.c) \
 	shared/runtime/pyexec.c \
 	shared/readline/readline.c \
 	ports/unix/gccollect.c \
 	shared/runtime/gchelper_generic.c \
-	$(BUILD)/frozen.c \
+	$(BUILD)/frozen.c
+endif
 
 # List of sources for qstr extraction
 SRC_QSTR += $(SRC_C)
