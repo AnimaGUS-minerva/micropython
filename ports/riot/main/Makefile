@@ -20,6 +20,7 @@ CUSTOM_BOARD ?= native
 
 ifeq ($(CUSTOM_BOARD),esp32)
     CFLAGS += -DCUSTOM_BOARD -DCUSTOM_BOARD_ESP32
+    CFLAGS += -DCONFIG_IDF_TARGET_ESP32  # required for 'ports/esp32/gccollect.c'
 else ifeq ($(CUSTOM_BOARD),native)
     CFLAGS += -DCUSTOM_BOARD -DCUSTOM_BOARD_NATIVE
 endif
