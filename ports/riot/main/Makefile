@@ -31,6 +31,10 @@ ifeq ($(CUSTOM_BOARD),esp32)
 else ifeq ($(CUSTOM_BOARD),native)
     ARCHIVES += $(MP_BASE)/../target/i686-unknown-linux-gnu/release/libvoucher.a
 endif
+
+# Currently, linking 'libvoucher.a' requires references to:
+#   `pthread_{get,set}specific`, `pthread_key_{create,delete}`
+USEMODULE += pthread  # cf. 'RIOT/tests/pthread_tls/Makefile'
 #---- @@
 
 MP_RIOT_HEAPSIZE = 131072U
