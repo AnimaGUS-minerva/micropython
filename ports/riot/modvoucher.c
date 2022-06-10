@@ -74,6 +74,15 @@ STATIC mp_obj_t mod_test_ffi(void) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_test_ffi_obj, mod_test_ffi);
 
+STATIC mp_obj_t mod_init_psa_crypto(void) {
+    printf("[modvoucher.c] mod_init_psa_crypto(): ^^\n");
+
+    vch_init_psa_crypto();
+
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_init_psa_crypto_obj, mod_init_psa_crypto);
+
 STATIC mp_obj_t mod_get_voucher_jada(void) {
     uint8_t *ptr_static;
     size_t sz;
@@ -230,6 +239,7 @@ STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_voucher) },
     { MP_ROM_QSTR(MP_QSTR_demo), MP_ROM_PTR(&mod_demo_obj) },
     { MP_ROM_QSTR(MP_QSTR_test_ffi), MP_ROM_PTR(&mod_test_ffi_obj) },
+    { MP_ROM_QSTR(MP_QSTR_init_psa_crypto), MP_ROM_PTR(&mod_init_psa_crypto_obj) },
     { MP_ROM_QSTR(MP_QSTR_get_voucher_jada), MP_ROM_PTR(&mod_get_voucher_jada_obj) },
     { MP_ROM_QSTR(MP_QSTR_get_voucher_F2_00_02), MP_ROM_PTR(&mod_get_voucher_F2_00_02_obj) },
     { MP_ROM_QSTR(MP_QSTR_get_masa_pem_F2_00_02), MP_ROM_PTR(&mod_get_masa_pem_F2_00_02_obj) },

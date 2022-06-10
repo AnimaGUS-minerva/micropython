@@ -26,6 +26,8 @@ if 1:  # test `voucher` module
         tpl, (42, False, None, True, False, b'\xa0\xb1\xc2\xd3\xe4\xf5', False))
     # print(tpl)
 
+    voucher.init_psa_crypto()
+
     bs_jada = voucher.get_voucher_jada()
     test_assert_eq('voucher.get_voucher_jada', len(bs_jada), 328)
     # print(len(bs_jada), bs_jada, list(bs_jada))
