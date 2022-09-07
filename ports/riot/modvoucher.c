@@ -208,11 +208,10 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_validate_obj, 1, 2, mod_validate)
 
 //
 
-typedef mp_int_t vrq_t; // @@ !!!!
-
 typedef struct _mp_obj_vrq_t {
     mp_obj_base_t base;
-    vrq_t inner;
+    mp_int_t proxy; // !!!! temp
+    //vi_proxy_t proxy; // !!!! WIP
 } mp_obj_vrq_t;
 
 STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
@@ -221,14 +220,14 @@ STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t
     mp_obj_vrq_t *o = m_new_obj(mp_obj_vrq_t);
     o->base.type = type;
 
-    memset(&o->inner, '\0', sizeof(o->inner));
-    printf("!! mp_vrq_make_new(): sizeof(o->inner): %d\n", sizeof(o->inner));
+    memset(&o->proxy, '\0', sizeof(o->proxy));
+    printf("!! mp_vrq_make_new(): sizeof(o->proxy): %d\n", sizeof(o->proxy));
 
-    // !!!! init `inner` ....
+    // vi_proxy_init(&o->proxy); // !!!!
     //====
 //    o->callback = args[0];
-//    o->inner.callback = mp_riot_isr_callback;
-//    o->inner.arg = &o->callback;
+//    o->proxy.callback = mp_riot_isr_callback;
+//    o->proxy.arg = &o->callback;
 
     return  MP_OBJ_FROM_PTR(o);
 }
@@ -237,11 +236,11 @@ STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t val_in) {
     mp_obj_vrq_t *o = MP_OBJ_TO_PTR(self_in);
     mp_int_t val = mp_obj_get_int(val_in);
 
-    //voucher_set(&o->inner, val);
+    //vi_proxy_set(&o->proxy, val);
     //==== !!!!
-    printf("mp_vrq_set(): before: %d\n", o->inner);
-    o->inner = val;
-    printf("mp_vrq_set(): after: %d\n", o->inner);
+    printf("mp_vrq_set(): before: %d\n", o->proxy);
+    o->proxy = val;
+    printf("mp_vrq_set(): after: %d\n", o->proxy);
 
     return mp_const_none;
 }
