@@ -83,25 +83,25 @@ STATIC mp_obj_t mod_init_psa_crypto(void) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_init_psa_crypto_obj, mod_init_psa_crypto);
 
-STATIC mp_obj_t mod_get_voucher_jada(void) {
+STATIC mp_obj_t mod_get_vch_jada(void) {
     uint8_t *ptr_static;
     size_t sz;
 
     sz = vch_get_voucher_jada(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_voucher_jada_obj, mod_get_voucher_jada);
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_vch_jada_obj, mod_get_vch_jada);
 
 //
 
-STATIC mp_obj_t mod_get_voucher_F2_00_02(void) {
+STATIC mp_obj_t mod_get_vch_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
     sz = vch_get_voucher_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_voucher_F2_00_02_obj, mod_get_voucher_F2_00_02);
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_vch_F2_00_02_obj, mod_get_vch_F2_00_02);
 
 STATIC mp_obj_t mod_get_masa_pem_F2_00_02(void) {
     uint8_t *ptr_static;
@@ -235,13 +235,73 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_validate_obj, 1, 2, mod_validate)
 
 //
 
+typedef mp_int_t voucher_t; // @@ !!!!
+
+typedef struct _mp_obj_voucher_t {
+    mp_obj_base_t base;
+    voucher_t t;
+    mp_obj_t callback;
+} mp_obj_voucher_t;
+
+STATIC mp_obj_t mp_voucher_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
+    printf("mp_voucher_make_new(): n_args: %d\n", n_args);
+
+    mp_arg_check_num(n_args, n_kw, 1, 1, false);
+    if (!mp_obj_is_callable(args[0])) {
+        mp_raise_TypeError("callback argument must be callable");
+    }
+
+    mp_obj_voucher_t *o = m_new_obj(mp_obj_voucher_t);
+    o->base.type = type;
+    memset(&o->t, '\0', sizeof(o->t));
+    o->callback = args[0];
+//    o->t.callback = mp_riot_isr_callback;
+//    o->t.arg = &o->callback;
+    return  MP_OBJ_FROM_PTR(o);
+}
+
+STATIC mp_obj_t mp_voucher_set(mp_obj_t self_in, mp_obj_t val_in) {
+    mp_obj_voucher_t *o = MP_OBJ_TO_PTR(self_in);
+    mp_int_t val = mp_obj_get_int(val_in);
+
+//    if (val <= 0) {
+//        mp_raise_ValueError("voucher.set(): `val_in` must be positive");
+//    }
+//
+//    voucher_set(&o->t, val);
+    //==== !!!!
+    printf("mp_voucher_set(): before: %d\n", o->t);
+    o->t = val;
+    printf("mp_voucher_set(): after: %d\n", o->t);
+
+    return mp_const_none;
+}
+
+MP_DEFINE_CONST_FUN_OBJ_2(mp_voucher_set_obj, mp_voucher_set);
+
+STATIC const mp_rom_map_elem_t voucher_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_voucher_set_obj) },
+};
+
+STATIC MP_DEFINE_CONST_DICT(voucher_locals_dict, voucher_locals_dict_table);
+STATIC const mp_obj_type_t voucher_type = {
+    { &mp_type_type },
+    .name = MP_QSTR_voucher,
+    .make_new = mp_voucher_make_new,
+    .locals_dict = (void*)&voucher_locals_dict,
+};
+
+//
+
 STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_voucher) },
+    { MP_ROM_QSTR(MP_QSTR_voucher), MP_ROM_PTR(&voucher_type) },
+    //---- debug/test stuff
     { MP_ROM_QSTR(MP_QSTR_demo), MP_ROM_PTR(&mod_demo_obj) },
     { MP_ROM_QSTR(MP_QSTR_test_ffi), MP_ROM_PTR(&mod_test_ffi_obj) },
     { MP_ROM_QSTR(MP_QSTR_init_psa_crypto), MP_ROM_PTR(&mod_init_psa_crypto_obj) },
-    { MP_ROM_QSTR(MP_QSTR_get_voucher_jada), MP_ROM_PTR(&mod_get_voucher_jada_obj) },
-    { MP_ROM_QSTR(MP_QSTR_get_voucher_F2_00_02), MP_ROM_PTR(&mod_get_voucher_F2_00_02_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_vch_jada), MP_ROM_PTR(&mod_get_vch_jada_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_vch_F2_00_02), MP_ROM_PTR(&mod_get_vch_F2_00_02_obj) },
     { MP_ROM_QSTR(MP_QSTR_get_masa_pem_F2_00_02), MP_ROM_PTR(&mod_get_masa_pem_F2_00_02_obj) },
     { MP_ROM_QSTR(MP_QSTR_get_key_pem_F2_00_02), MP_ROM_PTR(&mod_get_key_pem_F2_00_02_obj) },
     { MP_ROM_QSTR(MP_QSTR_get_device_crt_F2_00_02), MP_ROM_PTR(&mod_get_device_crt_F2_00_02_obj) },

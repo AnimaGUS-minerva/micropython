@@ -1,6 +1,7 @@
 import voucher
 
-print('dir(voucher):', dir(voucher))
+#print('dir(voucher):', dir(voucher))
+print('help(voucher):', help(voucher))
 
 print('voucher.demo():', voucher.demo())
 
@@ -28,12 +29,12 @@ if 1:  # test `voucher` module
 
     voucher.init_psa_crypto()
 
-    bs_jada = voucher.get_voucher_jada()
-    test_assert_eq('voucher.get_voucher_jada', len(bs_jada), 328)
+    bs_jada = voucher.get_vch_jada()
+    test_assert_eq('voucher.get_vch_jada', len(bs_jada), 328)
     # print(len(bs_jada), bs_jada, list(bs_jada))
 
-    bs_f2 = voucher.get_voucher_F2_00_02()
-    test_assert_eq('voucher.get_voucher_F2_00_02', len(bs_f2), 771)
+    bs_f2 = voucher.get_vch_F2_00_02()
+    test_assert_eq('voucher.get_vch_F2_00_02', len(bs_f2), 771)
     # print(len(bs_f2), bs_f2)
 
     bs_pem_f2 = voucher.get_masa_pem_F2_00_02()
@@ -87,5 +88,13 @@ if 1:  # test `voucher` module
         voucher.validate(bs_vrq_signed, bs_device_crt_f2))
     test_assert('voucher.{sign,validate} - vrq F2_00_02 via privkey',
         voucher.validate(bs_vrq_signed, bs_key_pem_f2))
+
+    #
+
+    print('@@ ======== WIP ========')
+    callable_dummy = test_assert  # !!!!
+    v = voucher.voucher(callable_dummy)
+    v.set(11)
+    v.set(22)
 
     #
