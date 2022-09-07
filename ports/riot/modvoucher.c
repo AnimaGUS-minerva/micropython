@@ -33,7 +33,7 @@
 
 #include "stdio.h"
 #include "string.h"
-#include "voucher.h" // via minerva_voucher crate
+#include "voucher_if.h"
 
 STATIC mp_obj_t mod_demo(void) {
     printf("[modvoucher.c] mod_demo(): ^^\n");
@@ -49,7 +49,7 @@ STATIC mp_obj_t mod_test_ffi(void) {
 
     { // basic stuff
         int input = 4;
-        int output = vch_square(input);
+        int output = vi_square(input);
         printf("input: %d output: %d\n", input, output);
     }
 
@@ -77,7 +77,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_test_ffi_obj, mod_test_ffi);
 STATIC mp_obj_t mod_init_psa_crypto(void) {
     printf("[modvoucher.c] mod_init_psa_crypto(): ^^\n");
 
-    vch_init_psa_crypto();
+    vi_init_psa_crypto();
 
     return mp_const_none;
 }
@@ -87,7 +87,7 @@ STATIC mp_obj_t mod_get_vch_jada(void) {
     uint8_t *ptr_static;
     size_t sz;
 
-    sz = vch_get_voucher_jada(&ptr_static);
+    sz = vi_get_voucher_jada(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_vch_jada_obj, mod_get_vch_jada);
@@ -98,7 +98,7 @@ STATIC mp_obj_t mod_get_vch_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
-    sz = vch_get_voucher_F2_00_02(&ptr_static);
+    sz = vi_get_voucher_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_vch_F2_00_02_obj, mod_get_vch_F2_00_02);
@@ -107,7 +107,7 @@ STATIC mp_obj_t mod_get_masa_pem_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
-    sz = vch_get_masa_pem_F2_00_02(&ptr_static);
+    sz = vi_get_masa_pem_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_masa_pem_F2_00_02_obj, mod_get_masa_pem_F2_00_02);
@@ -118,7 +118,7 @@ STATIC mp_obj_t mod_get_key_pem_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
-    sz = vch_get_key_pem_F2_00_02(&ptr_static);
+    sz = vi_get_key_pem_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_key_pem_F2_00_02_obj, mod_get_key_pem_F2_00_02);
@@ -127,7 +127,7 @@ STATIC mp_obj_t mod_get_device_crt_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
-    sz = vch_get_device_crt_F2_00_02(&ptr_static);
+    sz = vi_get_device_crt_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_device_crt_F2_00_02_obj, mod_get_device_crt_F2_00_02);
@@ -136,7 +136,7 @@ STATIC mp_obj_t mod_get_vrq_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
-    sz = vch_get_vrq_F2_00_02(&ptr_static);
+    sz = vi_get_vrq_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_vrq_F2_00_02_obj, mod_get_vrq_F2_00_02);
@@ -146,7 +146,7 @@ STATIC mp_obj_t mod_create_vrq_F2_00_02(void) {
     size_t sz_heap;
     mp_obj_t obj;
 
-    sz_heap = vch_create_vrq_F2_00_02(&ptr_heap);
+    sz_heap = vi_create_vrq_F2_00_02(&ptr_heap);
     obj = mp_obj_new_bytes(ptr_heap, sz_heap);
     free(ptr_heap);
 
@@ -173,7 +173,7 @@ STATIC mp_obj_t mod_sign(mp_obj_t bs_vch, mp_obj_t bs_key) {
             sz_key = str_len;
         }
 
-        sz_heap = vch_sign(ptr_raw, sz_raw, ptr_key, sz_key, &ptr_heap);
+        sz_heap = vi_sign(ptr_raw, sz_raw, ptr_key, sz_key, &ptr_heap);
         obj = mp_obj_new_bytes(ptr_heap, sz_heap);
         free(ptr_heap);
 
@@ -186,16 +186,16 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_2(mod_sign_obj, mod_sign);
 
 //
 
-STATIC mp_obj_t mod_debug(mp_obj_t self_in) {
+STATIC mp_obj_t mod_dump(mp_obj_t self_in) {
     if (mp_obj_is_type(self_in, &mp_type_bytes)) {
         GET_STR_DATA_LEN(self_in, str_data, str_len);
-        vch_debug(str_data, str_len);
+        vi_dump(str_data, str_len);
         return mp_const_none;
     } else {
         mp_raise_ValueError(MP_ERROR_TEXT("'voucher' arg must be <class 'bytes'>"));
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mod_debug_obj, mod_debug);
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(mod_dump_obj, mod_dump);
 
 STATIC mp_obj_t mod_validate(size_t n_args, const mp_obj_t *args) {
     // printf("mod_validate(): n_args: %d\n", n_args);
@@ -203,7 +203,7 @@ STATIC mp_obj_t mod_validate(size_t n_args, const mp_obj_t *args) {
     if (n_args == 1) {
         if (mp_obj_is_type(args[0], &mp_type_bytes)) {
             GET_STR_DATA_LEN(args[0], str_data, str_len);
-            return mp_obj_new_bool(vch_validate(str_data, str_len));
+            return mp_obj_new_bool(vi_validate(str_data, str_len));
         } else {
             mp_raise_ValueError(MP_ERROR_TEXT("'voucher' arg must be <class 'bytes'>"));
         }
@@ -225,7 +225,7 @@ STATIC mp_obj_t mod_validate(size_t n_args, const mp_obj_t *args) {
                 sz_pem = str_len;
             }
 
-            return mp_obj_new_bool(vch_validate_with_pem(ptr, sz, ptr_pem, sz_pem));
+            return mp_obj_new_bool(vi_validate_with_pem(ptr, sz, ptr_pem, sz_pem));
         } else {
             mp_raise_ValueError(MP_ERROR_TEXT("both 'voucher' and 'pem' args must be <class 'bytes'>"));
         }
@@ -307,9 +307,9 @@ STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_get_device_crt_F2_00_02), MP_ROM_PTR(&mod_get_device_crt_F2_00_02_obj) },
     { MP_ROM_QSTR(MP_QSTR_get_vrq_F2_00_02), MP_ROM_PTR(&mod_get_vrq_F2_00_02_obj) },
     { MP_ROM_QSTR(MP_QSTR_create_vrq_F2_00_02), MP_ROM_PTR(&mod_create_vrq_F2_00_02_obj) },
-    { MP_ROM_QSTR(MP_QSTR_sign), MP_ROM_PTR(&mod_sign_obj) },
-    { MP_ROM_QSTR(MP_QSTR_debug), MP_ROM_PTR(&mod_debug_obj) },
+    { MP_ROM_QSTR(MP_QSTR_dump), MP_ROM_PTR(&mod_dump_obj) },
     { MP_ROM_QSTR(MP_QSTR_validate), MP_ROM_PTR(&mod_validate_obj) },
+    { MP_ROM_QSTR(MP_QSTR_sign), MP_ROM_PTR(&mod_sign_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(mp_module_voucher_globals, mp_module_voucher_globals_table);
