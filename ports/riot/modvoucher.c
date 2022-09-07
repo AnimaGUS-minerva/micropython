@@ -1,30 +1,3 @@
-/*
- * This file is part of the MicroPython project, http://micropython.org/
- *
- * The MIT License (MIT)
- *
- * Copyright (c) 2017 Linaro Limited
- * Copyright (c) 2021 ANIMA Minerva toolkit
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
 #include "py/mpconfig.h"
 #if MICROPY_PY_VOUCHER
 
@@ -235,59 +208,66 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_validate_obj, 1, 2, mod_validate)
 
 //
 
-typedef mp_int_t voucher_t; // @@ !!!!
+typedef mp_int_t vrq_t; // @@ !!!!
 
-typedef struct _mp_obj_voucher_t {
+typedef struct _mp_obj_vrq_t {
     mp_obj_base_t base;
-    voucher_t t;
-    mp_obj_t callback;
-} mp_obj_voucher_t;
+    vrq_t inner;
+} mp_obj_vrq_t;
 
-STATIC mp_obj_t mp_voucher_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
-    printf("mp_voucher_make_new(): n_args: %d\n", n_args);
+STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
+    mp_arg_check_num(n_args, n_kw, 0, 0, false);
 
-    mp_arg_check_num(n_args, n_kw, 1, 1, false);
-    if (!mp_obj_is_callable(args[0])) {
-        mp_raise_TypeError("callback argument must be callable");
-    }
-
-    mp_obj_voucher_t *o = m_new_obj(mp_obj_voucher_t);
+    mp_obj_vrq_t *o = m_new_obj(mp_obj_vrq_t);
     o->base.type = type;
-    memset(&o->t, '\0', sizeof(o->t));
-    o->callback = args[0];
-//    o->t.callback = mp_riot_isr_callback;
-//    o->t.arg = &o->callback;
+
+    memset(&o->inner, '\0', sizeof(o->inner));
+    printf("!! mp_vrq_make_new(): sizeof(o->inner): %d\n", sizeof(o->inner));
+
+    // !!!! init `inner` ....
+    //====
+//    o->callback = args[0];
+//    o->inner.callback = mp_riot_isr_callback;
+//    o->inner.arg = &o->callback;
+
     return  MP_OBJ_FROM_PTR(o);
 }
 
-STATIC mp_obj_t mp_voucher_set(mp_obj_t self_in, mp_obj_t val_in) {
-    mp_obj_voucher_t *o = MP_OBJ_TO_PTR(self_in);
+STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t val_in) {
+    mp_obj_vrq_t *o = MP_OBJ_TO_PTR(self_in);
     mp_int_t val = mp_obj_get_int(val_in);
 
-//    if (val <= 0) {
-//        mp_raise_ValueError("voucher.set(): `val_in` must be positive");
-//    }
-//
-//    voucher_set(&o->t, val);
+    //voucher_set(&o->inner, val);
     //==== !!!!
-    printf("mp_voucher_set(): before: %d\n", o->t);
-    o->t = val;
-    printf("mp_voucher_set(): after: %d\n", o->t);
+    printf("mp_vrq_set(): before: %d\n", o->inner);
+    o->inner = val;
+    printf("mp_vrq_set(): after: %d\n", o->inner);
 
     return mp_const_none;
 }
 
-MP_DEFINE_CONST_FUN_OBJ_2(mp_voucher_set_obj, mp_voucher_set);
+MP_DEFINE_CONST_FUN_OBJ_2(mp_vrq_set_obj, mp_vrq_set);
+
+//
 
 STATIC const mp_rom_map_elem_t voucher_locals_dict_table[] = {
-    { MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_voucher_set_obj) },
+    { MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vrq_set_obj) },
+    //{ MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vch_set_obj) }, // TODO
 };
 
 STATIC MP_DEFINE_CONST_DICT(voucher_locals_dict, voucher_locals_dict_table);
-STATIC const mp_obj_type_t voucher_type = {
+
+STATIC const mp_obj_type_t vrq_type = {
     { &mp_type_type },
-    .name = MP_QSTR_voucher,
-    .make_new = mp_voucher_make_new,
+    .name = MP_QSTR_vrq,
+    .make_new = mp_vrq_make_new,
+    .locals_dict = (void*)&voucher_locals_dict,
+};
+
+STATIC const mp_obj_type_t vch_type = {
+    { &mp_type_type },
+    .name = MP_QSTR_vch,
+    //.make_new = mp_vch_make_new, // TODO
     .locals_dict = (void*)&voucher_locals_dict,
 };
 
@@ -295,7 +275,8 @@ STATIC const mp_obj_type_t voucher_type = {
 
 STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_voucher) },
-    { MP_ROM_QSTR(MP_QSTR_voucher), MP_ROM_PTR(&voucher_type) },
+    { MP_ROM_QSTR(MP_QSTR_vrq), MP_ROM_PTR(&vrq_type) },
+    { MP_ROM_QSTR(MP_QSTR_vch), MP_ROM_PTR(&vch_type) },
     //---- debug/test stuff
     { MP_ROM_QSTR(MP_QSTR_demo), MP_ROM_PTR(&mod_demo_obj) },
     { MP_ROM_QSTR(MP_QSTR_test_ffi), MP_ROM_PTR(&mod_test_ffi_obj) },

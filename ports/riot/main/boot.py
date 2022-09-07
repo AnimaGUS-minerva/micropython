@@ -91,10 +91,12 @@ if 1:  # test `voucher` module
 
     #
 
-    print('@@ ======== WIP ========')
-    callable_dummy = test_assert  # !!!!
-    v = voucher.voucher(callable_dummy)
-    v.set(11)
-    v.set(22)
+    def wip():
+        print('@@ ======== WIP ========')
+        vrq = voucher.vrq()
+        vrq.set(11)
+        vrq.set(22)
+
+    wip()
 
     #
