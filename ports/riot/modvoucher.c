@@ -210,8 +210,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_validate_obj, 1, 2, mod_validate)
 
 typedef struct _mp_obj_vrq_t {
     mp_obj_base_t base;
-    mp_int_t proxy; // !!!! temp
-    //vi_proxy_t proxy; // !!!! WIP
+    vi_provider_t *provider;
 } mp_obj_vrq_t;
 
 STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
@@ -220,14 +219,9 @@ STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t
     mp_obj_vrq_t *o = m_new_obj(mp_obj_vrq_t);
     o->base.type = type;
 
-    memset(&o->proxy, '\0', sizeof(o->proxy));
-    printf("!! mp_vrq_make_new(): sizeof(o->proxy): %d\n", sizeof(o->proxy));
-
-    // vi_proxy_init(&o->proxy); // !!!!
-    //====
-//    o->callback = args[0];
-//    o->proxy.callback = mp_riot_isr_callback;
-//    o->proxy.arg = &o->callback;
+    printf("!! mp_vrq_make_new(): [before] provider: %p\n", o->provider);
+    vi_provider_allocate(&o->provider, true /* is_vrq */);
+    printf("!! mp_vrq_make_new(): [after] provider: %p\n", o->provider);
 
     return  MP_OBJ_FROM_PTR(o);
 }
@@ -236,11 +230,8 @@ STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t val_in) {
     mp_obj_vrq_t *o = MP_OBJ_TO_PTR(self_in);
     mp_int_t val = mp_obj_get_int(val_in);
 
-    //vi_proxy_set(&o->proxy, val);
-    //==== !!!!
-    printf("mp_vrq_set(): before: %d\n", o->proxy);
-    o->proxy = val;
-    printf("mp_vrq_set(): after: %d\n", o->proxy);
+    printf("mp_vrq_set(): provider: %p\n", o->provider);
+    vi_provider_set(o->provider, val);
 
     return mp_const_none;
 }
