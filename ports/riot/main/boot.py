@@ -1,7 +1,7 @@
 import voucher
 
 #print('dir(voucher):', dir(voucher))
-print('help(voucher):', help(voucher))
+help(voucher)
 
 print('voucher.demo():', voucher.demo())
 
@@ -93,9 +93,14 @@ if 1:  # test `voucher` module
 
     def wip():
         print('@@ ======== WIP ========')
+
         vrq = voucher.vrq()
+        help(vrq)
+
         vrq.set(11)
+        vrq.dump()
         vrq.set(22)
+        vrq.dump()
 
     wip()
 

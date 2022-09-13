@@ -223,8 +223,10 @@ STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t
     vi_provider_allocate(&o->provider, true /* is_vrq */);
     printf("!! mp_vrq_make_new(): [after] provider: %p\n", o->provider);
 
-    return  MP_OBJ_FROM_PTR(o);
+    return MP_OBJ_FROM_PTR(o);
 }
+
+// TODO - hook `vi_provider_free()` on GC
 
 STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t val_in) {
     mp_obj_vrq_t *o = MP_OBJ_TO_PTR(self_in);
@@ -235,14 +237,30 @@ STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t val_in) {
 
     return mp_const_none;
 }
-
 MP_DEFINE_CONST_FUN_OBJ_2(mp_vrq_set_obj, mp_vrq_set);
+
+//
+
+typedef struct _mp_obj_vou_t {
+    mp_obj_base_t base;
+    vi_provider_t *provider;
+} mp_obj_vou_t;
+
+STATIC mp_obj_t mp_vou_dump(mp_obj_t self_in) {
+    mp_obj_vou_t *o = MP_OBJ_TO_PTR(self_in);
+
+    vi_provider_dump(o->provider);
+
+    return mp_const_none;
+}
+MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_dump_obj, mp_vou_dump);
 
 //
 
 STATIC const mp_rom_map_elem_t voucher_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vrq_set_obj) },
-    //{ MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vch_set_obj) }, // TODO
+    //{ MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vch_set_obj) }, // TODO - add/refactor
+    { MP_ROM_QSTR(MP_QSTR_dump), MP_ROM_PTR(&mp_vou_dump_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(voucher_locals_dict, voucher_locals_dict_table);
