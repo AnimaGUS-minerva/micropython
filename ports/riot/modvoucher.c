@@ -226,14 +226,17 @@ STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t
     return MP_OBJ_FROM_PTR(o);
 }
 
-// TODO - hook `vi_provider_free()` on GC
-
 STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t val_in) {
     mp_obj_vrq_t *o = MP_OBJ_TO_PTR(self_in);
     mp_int_t val = mp_obj_get_int(val_in);
 
     printf("mp_vrq_set(): provider: %p\n", o->provider);
     vi_provider_set(o->provider, val);
+
+// TODO !!!! !!!! hook `vi_provider_free()` on GC
+#if 0 // !!!! debug, lgtm
+    vi_provider_free(&o->provider);
+#endif
 
     return mp_const_none;
 }
