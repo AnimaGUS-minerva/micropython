@@ -52,6 +52,7 @@
 #define MICROPY_ENABLE_SOURCE_LINE      (1)
 #define MICROPY_STACK_CHECK             (1)
 #define MICROPY_ENABLE_GC               (1)
+#define MICROPY_ENABLE_FINALISER        (1) // @@ https://github.com/micropython/micropython/issues/3160
 #define MICROPY_ENABLE_SCHEDULER        (0)
 #define MICROPY_HELPER_REPL             (1)
 #define MICROPY_REPL_AUTO_INDENT        (1)

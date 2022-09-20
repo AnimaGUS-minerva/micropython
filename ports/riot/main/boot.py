@@ -1,4 +1,5 @@
 import voucher
+import gc
 
 #print('dir(voucher):', dir(voucher))
 help(voucher)
@@ -91,6 +92,13 @@ if 1:  # test `voucher` module
 
     #
 
+    for y in range(0, 2):
+        vrq = voucher.vrq()
+        print('(before gc) heap:', gc.mem_free())
+        del vrq
+        gc.collect()  # finalizer `mp_vou_del()` should be invoked via `__del__`
+        print('(after gc) heap:', gc.mem_free())
+
     def wip():
         print('@@ ======== WIP ========')
 
@@ -99,6 +107,7 @@ if 1:  # test `voucher` module
 
         vrq.set(11)
         vrq.dump()
+
         vrq.set(22)
         vrq.dump()
 
