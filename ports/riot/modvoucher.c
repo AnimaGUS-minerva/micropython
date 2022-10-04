@@ -226,16 +226,30 @@ STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t
     return MP_OBJ_FROM_PTR(o);
 }
 
-STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t val_in) {
+STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr_val_in) {
     mp_obj_vrq_t *o = MP_OBJ_TO_PTR(self_in);
-    mp_int_t val = mp_obj_get_int(val_in);
+
+    mp_int_t attr_key = mp_obj_get_int(attr_key_in);
+
+    if (mp_obj_is_type(attr_val_in, &mp_type_str)) { // ok
+        GET_STR_DATA_LEN(attr_val_in, str_data, str_len);
+        printf("(str) str_data: %s | str_len: %d\n", str_data, str_len);
+    } else if (mp_obj_is_type(attr_val_in, &mp_type_bytes)) { // ok
+        GET_STR_DATA_LEN(attr_val_in, str_data, str_len);
+        printf("(bytes) str_data[0]: 0x%x | str_len: %d\n", str_data[0], str_len);
+    } else if (mp_obj_is_type(attr_val_in, &mp_type_int)) { // ??
+        mp_int_t attr_val = mp_obj_get_int(attr_val_in);
+        printf("(int) attr_val: %d\n", attr_val);
+    } else {
+        mp_raise_ValueError(MP_ERROR_TEXT("Invalid 'attr_val' arg type"));
+    }
 
     printf("mp_vrq_set(): provider: %p\n", o->provider);
-    vi_provider_set(o->provider, val);
+    vi_provider_set(o->provider, attr_key); // !!!!
 
     return mp_const_none;
 }
-MP_DEFINE_CONST_FUN_OBJ_2(mp_vrq_set_obj, mp_vrq_set);
+MP_DEFINE_CONST_FUN_OBJ_3(mp_vrq_set_obj, mp_vrq_set);
 
 //
 

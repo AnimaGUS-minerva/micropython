@@ -105,11 +105,20 @@ if 1:  # test `voucher` module
         vrq = voucher.vrq()
         help(vrq)
 
-        vrq.set(11)
+        #-- rust
+        # vrq.set(Attr::Assertion(Assertion::Proximity))
+        #   .set(Attr::CreatedOn(1599086034))
+        #   .set(Attr::SerialNumber(b"00-D0-E5-F2-00-02".to_vec()));
+        #--
+        # vrq.set(vrq.ATTR_ASSERTION, 11)
+        # vrq.dump()
+        # vrq.set(vrq.ATTR_CREATED_ON, 1599086034)
+        # vrq.dump()
+        vrq.set(vrq.ATTR_SERIAL_NUMBER, '00-D0-E5-F2-00-02')
         vrq.dump()
-
-        vrq.set(22)
+        vrq.set(vrq.ATTR_NONCE, b'\x11\x22\x33')
         vrq.dump()
+        #--
 
     wip()
 
