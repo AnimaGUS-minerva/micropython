@@ -1,4 +1,5 @@
 import voucher
+from voucher import *  # for ATTR_*
 import gc
 
 #print('dir(voucher):', dir(voucher))
@@ -110,13 +111,13 @@ if 1:  # test `voucher` module
         #   .set(Attr::CreatedOn(1599086034))
         #   .set(Attr::SerialNumber(b"00-D0-E5-F2-00-02".to_vec()));
         #--
-        # vrq.set(vrq.ATTR_ASSERTION, 11)
-        # vrq.dump()
-        # vrq.set(vrq.ATTR_CREATED_ON, 1599086034)
-        # vrq.dump()
-        vrq.set(vrq.ATTR_SERIAL_NUMBER, '00-D0-E5-F2-00-02')
+        vrq.set(ATTR_ASSERTION, 11)
         vrq.dump()
-        vrq.set(vrq.ATTR_NONCE, b'\x11\x22\x33')
+        vrq.set(ATTR_CREATED_ON, 1599086034)
+        vrq.dump()
+        vrq.set(ATTR_SERIAL_NUMBER, '00-D0-E5-F2-00-02')
+        vrq.dump()
+        vrq.set(ATTR_NONCE, b'\x11\x22\x33')
         vrq.dump()
         #--
 
