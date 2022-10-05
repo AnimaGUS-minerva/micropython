@@ -228,24 +228,26 @@ STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t
 
 STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr_val_in) {
     mp_obj_vrq_t *o = MP_OBJ_TO_PTR(self_in);
+    vi_provider_t *provider = o->provider;
+    printf("mp_vrq_set(): provider: %p\n", provider);
 
     mp_int_t attr_key = mp_obj_get_int(attr_key_in);
 
     mp_int_t val_int;
     if (mp_obj_get_int_maybe(attr_val_in, &val_int)) {
         printf("(int) val_int: %d\n", val_int);
+        vi_provider_set_int(provider, attr_key, val_int);
     } else  if (mp_obj_is_type(attr_val_in, &mp_type_str)) {
         GET_STR_DATA_LEN(attr_val_in, str_data, str_len);
         printf("(str) str_data: %s | str_len: %d\n", str_data, str_len);
+        vi_provider_set_bytes(provider, attr_key, str_data, str_len);
     } else if (mp_obj_is_type(attr_val_in, &mp_type_bytes)) {
         GET_STR_DATA_LEN(attr_val_in, str_data, str_len);
         printf("(bytes) str_data[0]: 0x%x | str_len: %d\n", str_data[0], str_len);
+        vi_provider_set_bytes(provider, attr_key, str_data, str_len);
     } else {
-        mp_raise_ValueError(MP_ERROR_TEXT("invalid 'attr_val' arg type"));
+        mp_raise_ValueError(MP_ERROR_TEXT("invalid 'attr_val' type"));
     }
-
-    printf("mp_vrq_set(): provider: %p\n", o->provider);
-    vi_provider_set(o->provider, attr_key); // !!!!
 
     return self_in;
 }
@@ -303,24 +305,6 @@ STATIC const mp_obj_type_t vch_type = {
 };
 
 //
-
-enum {
-    ATTR_ASSERTION,
-    ATTR_CREATED_ON,
-    ATTR_DOMAIN_CERT_REVOCATION_CHECKS,
-    ATTR_EXPIRES_ON,
-    ATTR_IDEVID_ISSUER,
-    ATTR_LAST_RENEWAL_DATE,
-    ATTR_NONCE,
-    ATTR_PINNED_DOMAIN_CERT,
-    ATTR_PINNED_DOMAIN_PUBK,
-    ATTR_PINNED_DOMAIN_PUBK_SHA256,
-    ATTR_PRIOR_SIGNED_VOUCHER_REQUEST,
-    ATTR_PROXIMITY_REGISTRAR_CERT,
-    ATTR_PROXIMITY_REGISTRAR_PUBK,
-    ATTR_PROXIMITY_REGISTRAR_PUBK_SHA256,
-    ATTR_SERIAL_NUMBER,
-};
 
 STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_voucher) },
