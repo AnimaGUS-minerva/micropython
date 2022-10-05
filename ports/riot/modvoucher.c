@@ -247,7 +247,7 @@ STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr
     printf("mp_vrq_set(): provider: %p\n", o->provider);
     vi_provider_set(o->provider, attr_key); // !!!!
 
-    return mp_const_none;
+    return self_in;
 }
 MP_DEFINE_CONST_FUN_OBJ_3(mp_vrq_set_obj, mp_vrq_set);
 
@@ -279,24 +279,6 @@ MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_dump_obj, mp_vou_dump);
 
 //
 
-enum {
-    ATTR_ASSERTION,
-    ATTR_CREATED_ON,
-    ATTR_DOMAIN_CERT_REVOCATION_CHECKS,
-    ATTR_EXPIRES_ON,
-    ATTR_IDEVID_ISSUER,
-    ATTR_LAST_RENEWAL_DATE,
-    ATTR_NONCE,
-    ATTR_PINNED_DOMAIN_CERT,
-    ATTR_PINNED_DOMAIN_PUBK,
-    ATTR_PINNED_DOMAIN_PUBK_SHA256,
-    ATTR_PRIOR_SIGNED_VOUCHER_REQUEST,
-    ATTR_PROXIMITY_REGISTRAR_CERT,
-    ATTR_PROXIMITY_REGISTRAR_PUBK,
-    ATTR_PROXIMITY_REGISTRAR_PUBK_SHA256,
-    ATTR_SERIAL_NUMBER,
-};
-
 STATIC const mp_rom_map_elem_t voucher_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR___del__), MP_ROM_PTR(&mp_vou_del_obj) },
     { MP_ROM_QSTR(MP_QSTR_dump), MP_ROM_PTR(&mp_vou_dump_obj) },
@@ -321,6 +303,24 @@ STATIC const mp_obj_type_t vch_type = {
 };
 
 //
+
+enum {
+    ATTR_ASSERTION,
+    ATTR_CREATED_ON,
+    ATTR_DOMAIN_CERT_REVOCATION_CHECKS,
+    ATTR_EXPIRES_ON,
+    ATTR_IDEVID_ISSUER,
+    ATTR_LAST_RENEWAL_DATE,
+    ATTR_NONCE,
+    ATTR_PINNED_DOMAIN_CERT,
+    ATTR_PINNED_DOMAIN_PUBK,
+    ATTR_PINNED_DOMAIN_PUBK_SHA256,
+    ATTR_PRIOR_SIGNED_VOUCHER_REQUEST,
+    ATTR_PROXIMITY_REGISTRAR_CERT,
+    ATTR_PROXIMITY_REGISTRAR_PUBK,
+    ATTR_PROXIMITY_REGISTRAR_PUBK_SHA256,
+    ATTR_SERIAL_NUMBER,
+};
 
 STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_voucher) },
