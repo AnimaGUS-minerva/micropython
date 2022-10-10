@@ -231,9 +231,9 @@ STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr
     vi_provider_t *provider = o->provider;
     printf("mp_vrq_set(): provider: %p\n", provider);
 
-    mp_int_t attr_key = mp_obj_get_int(attr_key_in);
+    mp_uint_t attr_key = mp_obj_get_int(attr_key_in);
 
-    mp_int_t val_int;
+    mp_uint_t val_int;
     bool result;
     if (mp_obj_get_int_maybe(attr_val_in, &val_int)) {
         printf("(int) val_int: %d\n", val_int);
@@ -251,7 +251,8 @@ STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr
     }
 
     if (!result) {
-        mp_raise_ValueError(MP_ERROR_TEXT("'set' operation failed"));
+        mp_raise_msg_varg(&mp_type_ValueError,
+                          MP_ERROR_TEXT("'set' operation failed for attr_key(%d)"), attr_key);
     }
 
     return self_in;
