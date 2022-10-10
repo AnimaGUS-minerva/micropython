@@ -234,19 +234,24 @@ STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr
     mp_int_t attr_key = mp_obj_get_int(attr_key_in);
 
     mp_int_t val_int;
+    bool result;
     if (mp_obj_get_int_maybe(attr_val_in, &val_int)) {
         printf("(int) val_int: %d\n", val_int);
-        vi_provider_set_int(provider, attr_key, val_int);
-    } else  if (mp_obj_is_type(attr_val_in, &mp_type_str)) {
+        result = vi_provider_set_int(provider, attr_key, val_int);
+    } else if (mp_obj_is_type(attr_val_in, &mp_type_str)) {
         GET_STR_DATA_LEN(attr_val_in, str_data, str_len);
         printf("(str) str_data: %s | str_len: %d\n", str_data, str_len);
-        vi_provider_set_bytes(provider, attr_key, str_data, str_len);
+        result = vi_provider_set_bytes(provider, attr_key, str_data, str_len);
     } else if (mp_obj_is_type(attr_val_in, &mp_type_bytes)) {
         GET_STR_DATA_LEN(attr_val_in, str_data, str_len);
         printf("(bytes) str_data[0]: 0x%x | str_len: %d\n", str_data[0], str_len);
-        vi_provider_set_bytes(provider, attr_key, str_data, str_len);
+        result = vi_provider_set_bytes(provider, attr_key, str_data, str_len);
     } else {
         mp_raise_ValueError(MP_ERROR_TEXT("invalid 'attr_val' type"));
+    }
+
+    if (!result) {
+        mp_raise_ValueError(MP_ERROR_TEXT("'set' operation failed"));
     }
 
     return self_in;
