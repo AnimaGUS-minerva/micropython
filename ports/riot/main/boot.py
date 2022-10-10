@@ -111,7 +111,7 @@ if 1:  # test `voucher` module
         #   .set(Attr::CreatedOn(1599086034))
         #   .set(Attr::SerialNumber(b"00-D0-E5-F2-00-02".to_vec()));
         #--
-        vrq.set(ATTR_ASSERTION, 11) \
+        vrq.set(ATTR_ASSERTION, ASSERTION_PROXIMITY) \
            .set(ATTR_CREATED_ON, 1599086034) \
            .set(ATTR_SERIAL_NUMBER, '00-D0-E5-F2-00-02') \
            .set(ATTR_NONCE, b'\x11\x22\x33') \
