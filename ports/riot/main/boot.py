@@ -115,7 +115,9 @@ if 1:  # test `voucher` module
            .set(ATTR_CREATED_ON, 1599086034) \
            .set(ATTR_SERIAL_NUMBER, '00-D0-E5-F2-00-02') \
            .set(ATTR_NONCE, b'\x11\x22\x33') \
+           .set(ATTR_DOMAIN_CERT_REVOCATION_CHECKS, True) \
            .dump()
+
 
     wip()
 
