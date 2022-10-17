@@ -269,6 +269,16 @@ STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr
 }
 MP_DEFINE_CONST_FUN_OBJ_3(mp_vrq_set_obj, mp_vrq_set);
 
+STATIC mp_obj_t mp_vrq_sign(mp_obj_t self_in, mp_obj_t privkey_pem, mp_obj_t alg) {
+    vi_provider_t *ptr = ((mp_obj_vrq_t *) MP_OBJ_TO_PTR(self_in))->provider;
+
+    printf("!!!! mp_vrq_sign(): ptr: %p\n", ptr); // !!!!
+    // ...
+
+    return self_in;
+}
+MP_DEFINE_CONST_FUN_OBJ_3(mp_vrq_sign_obj, mp_vrq_sign);
+
 //
 
 typedef struct _mp_obj_vou_t {
@@ -302,7 +312,7 @@ STATIC const mp_rom_map_elem_t voucher_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_dump), MP_ROM_PTR(&mp_vou_dump_obj) },
     { MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vrq_set_obj) },
     //{ MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vch_set_obj) }, // TODO - add/refactor
-    //{ MP_ROM_QSTR(MP_QSTR_sign), MP_ROM_PTR(&mp_vrq_sign_obj) },
+    { MP_ROM_QSTR(MP_QSTR_sign), MP_ROM_PTR(&mp_vrq_sign_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(voucher_locals_dict, voucher_locals_dict_table);
