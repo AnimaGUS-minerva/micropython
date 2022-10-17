@@ -227,9 +227,8 @@ STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t
 }
 
 STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr_val_in) {
-    mp_obj_vrq_t *o = MP_OBJ_TO_PTR(self_in);
-    vi_provider_t *provider = o->provider;
-    printf("mp_vrq_set(): provider: %p\n", provider);
+    vi_provider_t *ptr = ((mp_obj_vrq_t *) MP_OBJ_TO_PTR(self_in))->provider;
+    printf("mp_vrq_set(): provider: %p\n", ptr);
 
     mp_uint_t key = mp_obj_get_int(attr_key_in);
 
@@ -240,15 +239,15 @@ STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr
     if (mp_obj_is_int(attr_val_in)) { // Yang::{Enumeration,DateAndTime}
         mp_uint_t val = mp_obj_get_int(attr_val_in);
         printf("(int) val: %d\n", val);
-        result = vi_provider_set_int(provider, key, val);
+        result = vi_provider_set_int(ptr, key, val);
     } else if (mp_obj_is_bool(attr_val_in)) { // Yang::Boolean
         bool val = mp_obj_get_int(attr_val_in);
         printf("(bool) val: %d\n", val);
-        result = vi_provider_set_bool(provider, key, val);
+        result = vi_provider_set_bool(ptr, key, val);
     } else if (mp_obj_is_str(attr_val_in)) { // Yang::String
         GET_STR_DATA_LEN(attr_val_in, str_data, str_len);
         printf("(str) data: '%s' | len: %d\n", str_data, str_len);
-        result = vi_provider_set_bytes(provider, key, str_data, str_len);
+        result = vi_provider_set_bytes(ptr, key, str_data, str_len);
     } else if (mp_obj_is_type(attr_val_in, &mp_type_bytes)) { // Yang::Binary
         GET_STR_DATA_LEN(attr_val_in, str_data, str_len);
         if (str_len > 0) {
@@ -256,7 +255,7 @@ STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr
         } else {
             printf("(bytes) len: %d\n", str_len);
         }
-        result = vi_provider_set_bytes(provider, key, str_data, str_len);
+        result = vi_provider_set_bytes(ptr, key, str_data, str_len);
     } else {
         mp_raise_ValueError(MP_ERROR_TEXT("invalid 'attr_val' type"));
     }
@@ -278,21 +277,21 @@ typedef struct _mp_obj_vou_t {
 } mp_obj_vou_t;
 
 STATIC mp_obj_t mp_vou_del(mp_obj_t self_in) {
-    mp_obj_vou_t *o = MP_OBJ_TO_PTR(self_in);
+    vi_provider_t *ptr = ((mp_obj_vou_t *) MP_OBJ_TO_PTR(self_in))->provider;
+    printf("mp_vou_del(): freeing provider: %p\n", ptr);
 
-    printf("mp_vou_del(): freeing provider: %p\n", o->provider);
-    vi_provider_free(&o->provider);
+    vi_provider_free(&ptr);
 
     return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_del_obj, mp_vou_del);
 
 STATIC mp_obj_t mp_vou_dump(mp_obj_t self_in) {
-    mp_obj_vou_t *o = MP_OBJ_TO_PTR(self_in);
+    vi_provider_t *ptr = ((mp_obj_vou_t *) MP_OBJ_TO_PTR(self_in))->provider;
 
-    vi_provider_dump(o->provider);
+    vi_provider_dump(ptr);
 
-    return mp_const_none;
+    return self_in;
 }
 MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_dump_obj, mp_vou_dump);
 
@@ -303,6 +302,7 @@ STATIC const mp_rom_map_elem_t voucher_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_dump), MP_ROM_PTR(&mp_vou_dump_obj) },
     { MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vrq_set_obj) },
     //{ MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vch_set_obj) }, // TODO - add/refactor
+    //{ MP_ROM_QSTR(MP_QSTR_sign), MP_ROM_PTR(&mp_vrq_sign_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(voucher_locals_dict, voucher_locals_dict_table);
