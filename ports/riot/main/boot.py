@@ -82,7 +82,7 @@ if 1:  # test `voucher` module
     test_assert('voucher.{sign,validate} - validating an unsigned voucher should fail',
         not voucher.validate(bs_vrq, bs_device_crt_f2))
 
-    bs_vrq_signed = voucher.sign(bs_vrq, bs_key_pem_f2)
+    bs_vrq_signed = voucher.sign(bs_vrq, bs_key_pem_f2, SA_ES256)
     # print('bs_vrq_signed', list(bs_vrq_signed))
     test_assert_eq('bs_vrq_signed (with asn1 signature)', len(bs_vrq_signed), 630)
 

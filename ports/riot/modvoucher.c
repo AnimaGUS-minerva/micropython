@@ -127,7 +127,7 @@ STATIC mp_obj_t mod_create_vrq_F2_00_02(void) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_create_vrq_F2_00_02_obj, mod_create_vrq_F2_00_02);
 
-STATIC mp_obj_t mod_sign(mp_obj_t bs_vch, mp_obj_t bs_key) {
+STATIC mp_obj_t mod_sign(mp_obj_t bs_vch, mp_obj_t bs_key, mp_obj_t alg) {
     if (mp_obj_is_type(bs_vch, &mp_type_bytes) &&
         mp_obj_is_type(bs_key, &mp_type_bytes)) {
         uint8_t *ptr_raw, *ptr_key, *ptr_heap;
@@ -146,7 +146,7 @@ STATIC mp_obj_t mod_sign(mp_obj_t bs_vch, mp_obj_t bs_key) {
             sz_key = str_len;
         }
 
-        sz_heap = vi_sign(ptr_raw, sz_raw, ptr_key, sz_key, &ptr_heap);
+        sz_heap = vi_sign(ptr_raw, sz_raw, ptr_key, sz_key, &ptr_heap, mp_obj_get_int(alg));
         obj = mp_obj_new_bytes(ptr_heap, sz_heap);
         free(ptr_heap);
 
@@ -155,7 +155,7 @@ STATIC mp_obj_t mod_sign(mp_obj_t bs_vch, mp_obj_t bs_key) {
         mp_raise_ValueError(MP_ERROR_TEXT("both 'voucher' and 'key' args must be <class 'bytes'>"));
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(mod_sign_obj, mod_sign);
+STATIC MP_DEFINE_CONST_FUN_OBJ_3(mod_sign_obj, mod_sign);
 
 //
 
@@ -275,7 +275,7 @@ STATIC mp_obj_t mp_vrq_sign(mp_obj_t self_in, mp_obj_t privkey_pem, mp_obj_t alg
     vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
 
     printf("!!!! mp_vrq_sign(): ptr: %p\n", ptr); // !!!!
-    // ...
+    // ... ..
 
     return self_in;
 }
