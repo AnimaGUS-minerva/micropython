@@ -272,10 +272,9 @@ STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr
 MP_DEFINE_CONST_FUN_OBJ_3(mp_vrq_set_obj, mp_vrq_set);
 
 STATIC mp_obj_t mp_vrq_sign(mp_obj_t self_in, mp_obj_t privkey_pem, mp_obj_t alg) {
-    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
-
-    printf("!!!! mp_vrq_sign(): ptr: %p\n", ptr); // !!!!
-    // ... ..
+    GET_STR_DATA_LEN(privkey_pem, str_data, str_len);
+    vi_provider_sign(MP_OBJ_TO_PROVIDER_PTR(self_in),
+                     str_data, str_len, mp_obj_get_int(alg));
 
     return self_in;
 }
