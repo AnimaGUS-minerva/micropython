@@ -213,6 +213,8 @@ typedef struct _mp_obj_vrq_t {
     vi_provider_t *provider;
 } mp_obj_vrq_t;
 
+#define MP_OBJ_TO_PROVIDER_PTR(obj)  ((mp_obj_vrq_t *) MP_OBJ_TO_PTR(obj))->provider
+
 STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
     mp_arg_check_num(n_args, n_kw, 0, 0, false);
 
@@ -227,7 +229,7 @@ STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t
 }
 
 STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr_val_in) {
-    vi_provider_t *ptr = ((mp_obj_vrq_t *) MP_OBJ_TO_PTR(self_in))->provider;
+    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
     printf("mp_vrq_set(): provider: %p\n", ptr);
 
     mp_uint_t key = mp_obj_get_int(attr_key_in);
@@ -270,7 +272,7 @@ STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr
 MP_DEFINE_CONST_FUN_OBJ_3(mp_vrq_set_obj, mp_vrq_set);
 
 STATIC mp_obj_t mp_vrq_sign(mp_obj_t self_in, mp_obj_t privkey_pem, mp_obj_t alg) {
-    vi_provider_t *ptr = ((mp_obj_vrq_t *) MP_OBJ_TO_PTR(self_in))->provider;
+    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
 
     printf("!!!! mp_vrq_sign(): ptr: %p\n", ptr); // !!!!
     // ...
@@ -287,19 +289,14 @@ typedef struct _mp_obj_vou_t {
 } mp_obj_vou_t;
 
 STATIC mp_obj_t mp_vou_del(mp_obj_t self_in) {
-    vi_provider_t *ptr = ((mp_obj_vou_t *) MP_OBJ_TO_PTR(self_in))->provider;
-    printf("mp_vou_del(): freeing provider: %p\n", ptr);
-
-    vi_provider_free(&ptr);
+    vi_provider_free(&MP_OBJ_TO_PROVIDER_PTR(self_in));
 
     return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_del_obj, mp_vou_del);
 
 STATIC mp_obj_t mp_vou_dump(mp_obj_t self_in) {
-    vi_provider_t *ptr = ((mp_obj_vou_t *) MP_OBJ_TO_PTR(self_in))->provider;
-
-    vi_provider_dump(ptr);
+    vi_provider_dump(MP_OBJ_TO_PROVIDER_PTR(self_in));
 
     return self_in;
 }
