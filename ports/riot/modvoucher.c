@@ -266,7 +266,7 @@ STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr
 
     return self_in;
 }
-MP_DEFINE_CONST_FUN_OBJ_3(mp_vrq_set_obj, mp_vrq_set);
+STATIC MP_DEFINE_CONST_FUN_OBJ_3(mp_vrq_set_obj, mp_vrq_set);
 
 STATIC mp_obj_t mp_vrq_sign(mp_obj_t self_in, mp_obj_t privkey_pem, mp_obj_t alg_in) {
     GET_STR_DATA_LEN(privkey_pem, str_data, str_len);
@@ -279,7 +279,16 @@ STATIC mp_obj_t mp_vrq_sign(mp_obj_t self_in, mp_obj_t privkey_pem, mp_obj_t alg
 
     return self_in;
 }
-MP_DEFINE_CONST_FUN_OBJ_3(mp_vrq_sign_obj, mp_vrq_sign);
+STATIC MP_DEFINE_CONST_FUN_OBJ_3(mp_vrq_sign_obj, mp_vrq_sign);
+
+STATIC mp_obj_t mp_vrq_validate(size_t n_args, const mp_obj_t *args) {
+    if (n_args == 1) { // without PEM (`signer_cert` is used instead)
+        mp_raise_ValueError(MP_ERROR_TEXT("TODO without PEM"));
+    } else { // with PEM
+        mp_raise_ValueError(MP_ERROR_TEXT("TODO with PEM"));
+    }
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mp_vrq_validate_obj, 1, 2, mp_vrq_validate);
 
 //
 
@@ -293,14 +302,14 @@ STATIC mp_obj_t mp_vou_del(mp_obj_t self_in) {
 
     return mp_const_none;
 }
-MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_del_obj, mp_vou_del);
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_del_obj, mp_vou_del);
 
 STATIC mp_obj_t mp_vou_dump(mp_obj_t self_in) {
     vi_provider_dump(MP_OBJ_TO_PROVIDER_PTR(self_in));
 
     return self_in;
 }
-MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_dump_obj, mp_vou_dump);
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_dump_obj, mp_vou_dump);
 
 //
 
@@ -310,6 +319,7 @@ STATIC const mp_rom_map_elem_t voucher_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vrq_set_obj) },
     //{ MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vch_set_obj) }, // TODO - add/refactor
     { MP_ROM_QSTR(MP_QSTR_sign), MP_ROM_PTR(&mp_vrq_sign_obj) },
+    { MP_ROM_QSTR(MP_QSTR_validate), MP_ROM_PTR(&mp_vrq_validate_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(voucher_locals_dict, voucher_locals_dict_table);
