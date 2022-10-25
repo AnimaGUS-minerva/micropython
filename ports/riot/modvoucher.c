@@ -213,19 +213,16 @@ typedef struct _mp_obj_vrq_t {
     vi_provider_t *provider;
 } mp_obj_vrq_t;
 
-#define MP_OBJ_TO_PROVIDER_PTR(obj)  ((mp_obj_vrq_t *) MP_OBJ_TO_PTR(obj))->provider
+#define MP_OBJ_TO_PROVIDER_PTR(obj)  (((mp_obj_vrq_t *) MP_OBJ_TO_PTR(obj))->provider)
 
 STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
     mp_arg_check_num(n_args, n_kw, 0, 0, false);
 
-    mp_obj_vrq_t *o = m_new_obj_with_finaliser(mp_obj_vrq_t);
-    o->base.type = type;
+    mp_obj_vrq_t *obj = m_new_obj_with_finaliser(mp_obj_vrq_t);
+    obj->base.type = type;
+    vi_provider_allocate(&obj->provider, true /* is_vrq */);
 
-    printf("!! mp_vrq_make_new(): [before] provider: %p\n", o->provider);
-    vi_provider_allocate(&o->provider, true /* is_vrq */);
-    printf("!! mp_vrq_make_new(): [after] provider: %p\n", o->provider);
-
-    return MP_OBJ_FROM_PTR(o);
+    return MP_OBJ_FROM_PTR(obj);
 }
 
 STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr_val_in) {
