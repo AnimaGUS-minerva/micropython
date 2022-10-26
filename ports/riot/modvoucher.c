@@ -208,26 +208,32 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_validate_obj, 1, 2, mod_validate)
 
 //
 
-typedef struct _mp_obj_vrq_t {
+typedef struct _mp_obj_vou_t {
     mp_obj_base_t base;
     vi_provider_t *provider;
-} mp_obj_vrq_t;
+} mp_obj_vou_t;
 
-#define MP_OBJ_TO_PROVIDER_PTR(obj)  (((mp_obj_vrq_t *) MP_OBJ_TO_PTR(obj))->provider)
+#define MP_OBJ_TO_PROVIDER_PTR(obj)  (((mp_obj_vou_t *) MP_OBJ_TO_PTR(obj))->provider)
 
-STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
+STATIC mp_obj_t mp_vou_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args, bool is_vrq) {
     mp_arg_check_num(n_args, n_kw, 0, 0, false);
 
-    mp_obj_vrq_t *obj = m_new_obj_with_finaliser(mp_obj_vrq_t);
+    mp_obj_vou_t *obj = m_new_obj_with_finaliser(mp_obj_vou_t);
     obj->base.type = type;
-    vi_provider_allocate(&obj->provider, true /* is_vrq */);
+    vi_provider_allocate(&obj->provider, is_vrq);
 
     return MP_OBJ_FROM_PTR(obj);
 }
+STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
+    return mp_vou_make_new(type, n_args, n_kw, args, true);
+}
+STATIC mp_obj_t mp_vch_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
+    return mp_vou_make_new(type, n_args, n_kw, args, false);
+}
 
-STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr_val_in) {
+STATIC mp_obj_t mp_vou_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr_val_in) {
     vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
-    printf("mp_vrq_set(): provider: %p\n", ptr);
+    printf("mp_vou_set(): provider: %p\n", ptr);
 
     mp_uint_t key = mp_obj_get_int(attr_key_in);
 
@@ -266,9 +272,9 @@ STATIC mp_obj_t mp_vrq_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr
 
     return self_in;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(mp_vrq_set_obj, mp_vrq_set);
+STATIC MP_DEFINE_CONST_FUN_OBJ_3(mp_vou_set_obj, mp_vou_set);
 
-STATIC mp_obj_t mp_vrq_sign(mp_obj_t self_in, mp_obj_t privkey_pem, mp_obj_t alg_in) {
+STATIC mp_obj_t mp_vou_sign(mp_obj_t self_in, mp_obj_t privkey_pem, mp_obj_t alg_in) {
     if (!mp_obj_is_type(privkey_pem, &mp_type_bytes)) {
         mp_raise_ValueError(MP_ERROR_TEXT("'pem' arg must be <class 'bytes'>"));
     }
@@ -282,9 +288,9 @@ STATIC mp_obj_t mp_vrq_sign(mp_obj_t self_in, mp_obj_t privkey_pem, mp_obj_t alg
 
     return self_in;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(mp_vrq_sign_obj, mp_vrq_sign);
+STATIC MP_DEFINE_CONST_FUN_OBJ_3(mp_vou_sign_obj, mp_vou_sign);
 
-STATIC mp_obj_t mp_vrq_validate(size_t n_args, const mp_obj_t *args) {
+STATIC mp_obj_t mp_vou_validate(size_t n_args, const mp_obj_t *args) {
     bool result;
     vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(args[0]);
     if (n_args == 1) { // without PEM (`signer_cert` is used instead)
@@ -299,14 +305,9 @@ STATIC mp_obj_t mp_vrq_validate(size_t n_args, const mp_obj_t *args) {
 
     return mp_obj_new_bool(result);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mp_vrq_validate_obj, 1, 2, mp_vrq_validate);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mp_vou_validate_obj, 1, 2, mp_vou_validate);
 
 //
-
-typedef struct _mp_obj_vou_t {
-    mp_obj_base_t base;
-    vi_provider_t *provider;
-} mp_obj_vou_t;
 
 STATIC mp_obj_t mp_vou_del(mp_obj_t self_in) {
     vi_provider_free(&MP_OBJ_TO_PROVIDER_PTR(self_in));
@@ -327,10 +328,9 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_dump_obj, mp_vou_dump);
 STATIC const mp_rom_map_elem_t voucher_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR___del__), MP_ROM_PTR(&mp_vou_del_obj) },
     { MP_ROM_QSTR(MP_QSTR_dump), MP_ROM_PTR(&mp_vou_dump_obj) },
-    { MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vrq_set_obj) },
-    //{ MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vch_set_obj) }, // TODO - add/refactor
-    { MP_ROM_QSTR(MP_QSTR_sign), MP_ROM_PTR(&mp_vrq_sign_obj) },
-    { MP_ROM_QSTR(MP_QSTR_validate), MP_ROM_PTR(&mp_vrq_validate_obj) },
+    { MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vou_set_obj) },
+    { MP_ROM_QSTR(MP_QSTR_sign), MP_ROM_PTR(&mp_vou_sign_obj) },
+    { MP_ROM_QSTR(MP_QSTR_validate), MP_ROM_PTR(&mp_vou_validate_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(voucher_locals_dict, voucher_locals_dict_table);
@@ -345,7 +345,7 @@ STATIC const mp_obj_type_t vrq_type = {
 STATIC const mp_obj_type_t vch_type = {
     { &mp_type_type },
     .name = MP_QSTR_vch,
-    //.make_new = mp_vch_make_new, // TODO
+    .make_new = mp_vch_make_new,
     .locals_dict = (void*)&voucher_locals_dict,
 };
 
