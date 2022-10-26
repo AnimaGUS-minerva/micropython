@@ -285,17 +285,19 @@ STATIC mp_obj_t mp_vrq_sign(mp_obj_t self_in, mp_obj_t privkey_pem, mp_obj_t alg
 STATIC MP_DEFINE_CONST_FUN_OBJ_3(mp_vrq_sign_obj, mp_vrq_sign);
 
 STATIC mp_obj_t mp_vrq_validate(size_t n_args, const mp_obj_t *args) {
+    bool result;
     vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(args[0]);
-
     if (n_args == 1) { // without PEM (`signer_cert` is used instead)
-        return mp_obj_new_bool(vi_provider_validate(ptr));
+        result = vi_provider_validate(ptr);
     } else { // with PEM
         if (!mp_obj_is_type(args[1], &mp_type_bytes)) {
             mp_raise_ValueError(MP_ERROR_TEXT("'pem' arg must be <class 'bytes'>"));
         }
         GET_STR_DATA_LEN(args[1], str_data, str_len);
-        return mp_obj_new_bool(vi_provider_validate_with_pem(ptr, str_data, str_len));
+        result = vi_provider_validate_with_pem(ptr, str_data, str_len);
     }
+
+    return mp_obj_new_bool(result);
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mp_vrq_validate_obj, 1, 2, mp_vrq_validate);
 

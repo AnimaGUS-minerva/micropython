@@ -132,20 +132,17 @@ if 1:  # test `voucher` module
 
         test_assert('vrq.validate(DEVICE_CRT_F2_00_02) - with pubkey PEM, should fail (unsigned)',
             not vrq.validate(DEVICE_CRT_F2_00_02))
-
         test_assert('vrq.validate(KEY_PEM_F2_00_02) - with privkey PEM, should fail (unsigned)',
             not vrq.validate(KEY_PEM_F2_00_02))
 
-        vrq.sign(KEY_PEM_F2_00_02, SA_ES256) \
-           .dump()
+        vrq.sign(KEY_PEM_F2_00_02, SA_ES256).dump()
 
         test_assert('vrq.validate(DEVICE_CRT_F2_00_02) - with pubkey PEM',
             vrq.validate(DEVICE_CRT_F2_00_02))
-
         test_assert('vrq.validate(KEY_PEM_F2_00_02) - with privkey PEM',
             vrq.validate(KEY_PEM_F2_00_02))
 
-        # TODO
+        # TODO !!!!
         # vch_jada.validate()  # without PEM (`signer_cert` is used instead)
 
     wip()
