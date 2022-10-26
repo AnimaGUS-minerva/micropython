@@ -142,8 +142,9 @@ if 1:  # test `voucher` module
         test_assert('vrq.validate(KEY_PEM_F2_00_02) - with privkey PEM',
             vrq.validate(KEY_PEM_F2_00_02))
 
-        # TODO !!!!
-        # vch_jada.validate()  # without PEM (`signer_cert` is used instead)
+        bs_jada = voucher.get_vch_jada()  # debug
+        vch = voucher.load(bs_jada)  # !!!!
+        # vch.validate()  # without PEM (`signer_cert` is used instead)
 
     wip()
 
