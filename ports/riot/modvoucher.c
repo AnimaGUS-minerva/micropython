@@ -8,17 +8,17 @@
 #include "string.h"
 #include "voucher_if.h"
 
-STATIC mp_obj_t mod_demo(void) {
-    printf("[modvoucher.c] mod_demo(): ^^\n");
+STATIC mp_obj_t debug_demo(void) {
+    printf("[modvoucher.c] debug_demo(): ^^\n");
 
     // ...
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_demo_obj, mod_demo);
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(debug_demo_obj, debug_demo);
 
-STATIC mp_obj_t mod_test_ffi(void) {
-    printf("mod_test_ffi(): ^^\n");
+STATIC mp_obj_t debug_test_ffi(void) {
+    printf("debug_test_ffi(): ^^\n");
 
     { // basic stuff
         int input = 4;
@@ -45,76 +45,76 @@ STATIC mp_obj_t mod_test_ffi(void) {
 
     return mp_obj_new_tuple(SZ, tuple);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_test_ffi_obj, mod_test_ffi);
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(debug_test_ffi_obj, debug_test_ffi);
 
-STATIC mp_obj_t mod_init_psa_crypto(void) {
-    printf("[modvoucher.c] mod_init_psa_crypto(): ^^\n");
+STATIC mp_obj_t debug_init_psa_crypto(void) {
+    printf("[modvoucher.c] debug_init_psa_crypto(): ^^\n");
 
     vi_init_psa_crypto();
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_init_psa_crypto_obj, mod_init_psa_crypto);
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(debug_init_psa_crypto_obj, debug_init_psa_crypto);
 
-STATIC mp_obj_t mod_get_vch_jada(void) {
+STATIC mp_obj_t debug_get_vch_jada(void) {
     uint8_t *ptr_static;
     size_t sz;
 
     sz = vi_get_voucher_jada(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_vch_jada_obj, mod_get_vch_jada);
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(debug_get_vch_jada_obj, debug_get_vch_jada);
 
 //
 
-STATIC mp_obj_t mod_get_vch_F2_00_02(void) {
+STATIC mp_obj_t debug_get_vch_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
     sz = vi_get_voucher_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_vch_F2_00_02_obj, mod_get_vch_F2_00_02);
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(debug_get_vch_F2_00_02_obj, debug_get_vch_F2_00_02);
 
-STATIC mp_obj_t mod_get_masa_pem_F2_00_02(void) {
+STATIC mp_obj_t debug_get_masa_pem_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
     sz = vi_get_masa_pem_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_masa_pem_F2_00_02_obj, mod_get_masa_pem_F2_00_02);
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(debug_get_masa_pem_F2_00_02_obj, debug_get_masa_pem_F2_00_02);
 
 //
 
-STATIC mp_obj_t mod_get_key_pem_F2_00_02(void) {
+STATIC mp_obj_t debug_get_key_pem_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
     sz = vi_get_key_pem_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_key_pem_F2_00_02_obj, mod_get_key_pem_F2_00_02);
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(debug_get_key_pem_F2_00_02_obj, debug_get_key_pem_F2_00_02);
 
-STATIC mp_obj_t mod_get_device_crt_F2_00_02(void) {
+STATIC mp_obj_t debug_get_device_crt_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
     sz = vi_get_device_crt_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_device_crt_F2_00_02_obj, mod_get_device_crt_F2_00_02);
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(debug_get_device_crt_F2_00_02_obj, debug_get_device_crt_F2_00_02);
 
-STATIC mp_obj_t mod_get_vrq_F2_00_02(void) {
+STATIC mp_obj_t debug_get_vrq_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
     sz = vi_get_vrq_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_get_vrq_F2_00_02_obj, mod_get_vrq_F2_00_02);
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(debug_get_vrq_F2_00_02_obj, debug_get_vrq_F2_00_02);
 
-STATIC mp_obj_t mod_create_vrq_F2_00_02(void) {
+STATIC mp_obj_t debug_create_vrq_F2_00_02(void) {
     uint8_t *ptr_heap;
     size_t sz_heap;
     mp_obj_t obj;
@@ -125,9 +125,9 @@ STATIC mp_obj_t mod_create_vrq_F2_00_02(void) {
 
     return obj;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_create_vrq_F2_00_02_obj, mod_create_vrq_F2_00_02);
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(debug_create_vrq_F2_00_02_obj, debug_create_vrq_F2_00_02);
 
-STATIC mp_obj_t mod_sign(mp_obj_t bs_vch, mp_obj_t bs_key, mp_obj_t alg) {
+STATIC mp_obj_t debug_sign(mp_obj_t bs_vch, mp_obj_t bs_key, mp_obj_t alg) {
     if (mp_obj_is_type(bs_vch, &mp_type_bytes) &&
         mp_obj_is_type(bs_key, &mp_type_bytes)) {
         uint8_t *ptr_raw, *ptr_key, *ptr_heap;
@@ -155,11 +155,11 @@ STATIC mp_obj_t mod_sign(mp_obj_t bs_vch, mp_obj_t bs_key, mp_obj_t alg) {
         mp_raise_ValueError(MP_ERROR_TEXT("both 'voucher' and 'key' args must be <class 'bytes'>"));
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(mod_sign_obj, mod_sign);
+STATIC MP_DEFINE_CONST_FUN_OBJ_3(debug_sign_obj, debug_sign);
 
 //
 
-STATIC mp_obj_t mod_dump(mp_obj_t self_in) {
+STATIC mp_obj_t debug_dump(mp_obj_t self_in) {
     if (mp_obj_is_type(self_in, &mp_type_bytes)) {
         GET_STR_DATA_LEN(self_in, str_data, str_len);
         vi_dump(str_data, str_len);
@@ -168,10 +168,10 @@ STATIC mp_obj_t mod_dump(mp_obj_t self_in) {
         mp_raise_ValueError(MP_ERROR_TEXT("'voucher' arg must be <class 'bytes'>"));
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mod_dump_obj, mod_dump);
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(debug_dump_obj, debug_dump);
 
-STATIC mp_obj_t mod_validate(size_t n_args, const mp_obj_t *args) {
-    // printf("mod_validate(): n_args: %d\n", n_args);
+STATIC mp_obj_t debug_validate(size_t n_args, const mp_obj_t *args) {
+    // printf("debug_validate(): n_args: %d\n", n_args);
 
     if (n_args == 1) {
         if (mp_obj_is_type(args[0], &mp_type_bytes)) {
@@ -204,7 +204,7 @@ STATIC mp_obj_t mod_validate(size_t n_args, const mp_obj_t *args) {
         }
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_validate_obj, 1, 2, mod_validate);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(debug_validate_obj, 1, 2, debug_validate);
 
 //
 
@@ -252,7 +252,7 @@ STATIC mp_obj_t mp_vou_from_cbor(mp_obj_t cbor) {
         printf("mp_vou_from_cbor(): (cbor) data[0]: 0x%x | len: %d\n", str_data[0], str_len);
     }
 
-    { // !!!!
+    { // !!!!--
         return mp_const_none;
     }
 }
@@ -260,7 +260,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_from_cbor_obj, mp_vou_from_cbor);
 
 STATIC mp_obj_t mp_vou_to_cbor(mp_obj_t self_in) {
 
-    { // !!!!
+    { // !!!!--
         uint8_t *ptr_static;
         size_t sz;
 
@@ -410,19 +410,19 @@ STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_SA_ES512), MP_ROM_INT(SA_ES512) },
     { MP_ROM_QSTR(MP_QSTR_SA_PS256), MP_ROM_INT(SA_PS256) },
     //---- debug/test stuff
-    { MP_ROM_QSTR(MP_QSTR_demo), MP_ROM_PTR(&mod_demo_obj) },
-    { MP_ROM_QSTR(MP_QSTR_test_ffi), MP_ROM_PTR(&mod_test_ffi_obj) },
-    { MP_ROM_QSTR(MP_QSTR_init_psa_crypto), MP_ROM_PTR(&mod_init_psa_crypto_obj) },
-    { MP_ROM_QSTR(MP_QSTR_get_vch_jada), MP_ROM_PTR(&mod_get_vch_jada_obj) },
-    { MP_ROM_QSTR(MP_QSTR_get_vch_F2_00_02), MP_ROM_PTR(&mod_get_vch_F2_00_02_obj) },
-    { MP_ROM_QSTR(MP_QSTR_get_masa_pem_F2_00_02), MP_ROM_PTR(&mod_get_masa_pem_F2_00_02_obj) },
-    { MP_ROM_QSTR(MP_QSTR_get_key_pem_F2_00_02), MP_ROM_PTR(&mod_get_key_pem_F2_00_02_obj) },
-    { MP_ROM_QSTR(MP_QSTR_get_device_crt_F2_00_02), MP_ROM_PTR(&mod_get_device_crt_F2_00_02_obj) },
-    { MP_ROM_QSTR(MP_QSTR_get_vrq_F2_00_02), MP_ROM_PTR(&mod_get_vrq_F2_00_02_obj) },
-    { MP_ROM_QSTR(MP_QSTR_create_vrq_F2_00_02), MP_ROM_PTR(&mod_create_vrq_F2_00_02_obj) },
-    { MP_ROM_QSTR(MP_QSTR_dump), MP_ROM_PTR(&mod_dump_obj) },
-    { MP_ROM_QSTR(MP_QSTR_validate), MP_ROM_PTR(&mod_validate_obj) },
-    { MP_ROM_QSTR(MP_QSTR_sign), MP_ROM_PTR(&mod_sign_obj) },
+    { MP_ROM_QSTR(MP_QSTR_demo), MP_ROM_PTR(&debug_demo_obj) },
+    { MP_ROM_QSTR(MP_QSTR_test_ffi), MP_ROM_PTR(&debug_test_ffi_obj) },
+    { MP_ROM_QSTR(MP_QSTR_init_psa_crypto), MP_ROM_PTR(&debug_init_psa_crypto_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_vch_jada), MP_ROM_PTR(&debug_get_vch_jada_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_vch_F2_00_02), MP_ROM_PTR(&debug_get_vch_F2_00_02_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_masa_pem_F2_00_02), MP_ROM_PTR(&debug_get_masa_pem_F2_00_02_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_key_pem_F2_00_02), MP_ROM_PTR(&debug_get_key_pem_F2_00_02_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_device_crt_F2_00_02), MP_ROM_PTR(&debug_get_device_crt_F2_00_02_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_vrq_F2_00_02), MP_ROM_PTR(&debug_get_vrq_F2_00_02_obj) },
+    { MP_ROM_QSTR(MP_QSTR_create_vrq_F2_00_02), MP_ROM_PTR(&debug_create_vrq_F2_00_02_obj) },
+    { MP_ROM_QSTR(MP_QSTR_dump), MP_ROM_PTR(&debug_dump_obj) },
+    { MP_ROM_QSTR(MP_QSTR_validate), MP_ROM_PTR(&debug_validate_obj) },
+    { MP_ROM_QSTR(MP_QSTR_sign), MP_ROM_PTR(&debug_sign_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(mp_module_voucher_globals, mp_module_voucher_globals_table);
