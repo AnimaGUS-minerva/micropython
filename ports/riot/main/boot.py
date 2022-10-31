@@ -105,6 +105,8 @@ if 1:  # test `voucher` module
 
         vrq = voucher.vrq()
         help(vrq)
+        vch = voucher.vch()
+        help(vch)
 
         #-- rust
         # vrq.set(Attr::Assertion(Assertion::Proximity))
@@ -143,8 +145,13 @@ if 1:  # test `voucher` module
             vrq.validate(KEY_PEM_F2_00_02))
 
         bs_jada = voucher.get_vch_jada()  # debug
-        vch = voucher.load(bs_jada)  # !!!!
-        # vch.validate()  # without PEM (`signer_cert` is used instead)
+        test_assert_eq('from_cbor()', voucher.from_cbor(bs_jada), not None)  # !!!!
+
+        vch = voucher.vch()  # ....
+        bs_cbor = vch.to_cbor()  # !!!!
+        test_assert_eq('to_cbor()', len(bs_cbor), 112233)  # !!!!
+
+        # vch.validate()  # !!!! without PEM (`signer_cert` is used instead)
 
     wip()
 

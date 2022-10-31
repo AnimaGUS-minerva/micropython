@@ -235,27 +235,40 @@ STATIC mp_obj_t mp_vch_make_new(const mp_obj_type_t *type, size_t n_args, size_t
 
 //
 
-STATIC mp_obj_t mod_load(mp_obj_t cbor) {
-    if (!mp_obj_is_type(cbor, &mp_type_bytes)) {
-        mp_raise_ValueError(MP_ERROR_TEXT("'cbor' arg must be <class 'bytes'>"));
-    }
-    GET_STR_DATA_LEN(cbor, str_data, str_len);
-    printf("mod_load(): (cbor) data[0]: 0x%x | len: %d\n", str_data[0], str_len);
-
-//    if (!vi_provider_foo(....)) {
-//        mp_raise_ValueError(MP_ERROR_TEXT("'load' operation failed"));
-//    }
-
-    return mp_const_none; // !!!!
-}
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mod_load_obj, mod_load);
-
 STATIC mp_obj_t mp_vou_del(mp_obj_t self_in) {
     vi_provider_free(&MP_OBJ_TO_PROVIDER_PTR(self_in));
 
     return mp_const_none;
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_del_obj, mp_vou_del);
+
+STATIC mp_obj_t mp_vou_from_cbor(mp_obj_t cbor) {
+    if (!mp_obj_is_type(cbor, &mp_type_bytes)) {
+        mp_raise_ValueError(MP_ERROR_TEXT("'cbor' arg must be <class 'bytes'>"));
+    }
+    GET_STR_DATA_LEN(cbor, str_data, str_len);
+
+    if (str_len > 0) {
+        printf("mp_vou_from_cbor(): (cbor) data[0]: 0x%x | len: %d\n", str_data[0], str_len);
+    }
+
+    { // !!!!
+        return mp_const_none;
+    }
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_from_cbor_obj, mp_vou_from_cbor);
+
+STATIC mp_obj_t mp_vou_to_cbor(mp_obj_t self_in) {
+
+    { // !!!!
+        uint8_t *ptr_static;
+        size_t sz;
+
+        sz = vi_get_voucher_jada(&ptr_static);
+        return mp_obj_new_bytes(ptr_static, sz);
+    }
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_to_cbor_obj, mp_vou_to_cbor);
 
 STATIC mp_obj_t mp_vou_dump(mp_obj_t self_in) {
     vi_provider_dump(MP_OBJ_TO_PROVIDER_PTR(self_in));
@@ -344,6 +357,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mp_vou_validate_obj, 1, 2, mp_vou_val
 
 STATIC const mp_rom_map_elem_t voucher_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR___del__), MP_ROM_PTR(&mp_vou_del_obj) },
+    { MP_ROM_QSTR(MP_QSTR_to_cbor), MP_ROM_PTR(&mp_vou_to_cbor_obj) },
     { MP_ROM_QSTR(MP_QSTR_dump), MP_ROM_PTR(&mp_vou_dump_obj) },
     { MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vou_set_obj) },
     { MP_ROM_QSTR(MP_QSTR_sign), MP_ROM_PTR(&mp_vou_sign_obj) },
@@ -370,9 +384,9 @@ STATIC const mp_obj_type_t vch_type = {
 
 STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_voucher) },
-    { MP_ROM_QSTR(MP_QSTR_load), MP_ROM_PTR(&mod_load_obj) },
     { MP_ROM_QSTR(MP_QSTR_vrq), MP_ROM_PTR(&vrq_type) },
     { MP_ROM_QSTR(MP_QSTR_vch), MP_ROM_PTR(&vch_type) },
+    { MP_ROM_QSTR(MP_QSTR_from_cbor), MP_ROM_PTR(&mp_vou_from_cbor_obj) },
     { MP_ROM_QSTR(MP_QSTR_ATTR_ASSERTION), MP_ROM_INT(ATTR_ASSERTION) },
     { MP_ROM_QSTR(MP_QSTR_ATTR_CREATED_ON), MP_ROM_INT(ATTR_CREATED_ON) },
     { MP_ROM_QSTR(MP_QSTR_ATTR_DOMAIN_CERT_REVOCATION_CHECKS), MP_ROM_INT(ATTR_DOMAIN_CERT_REVOCATION_CHECKS) },
