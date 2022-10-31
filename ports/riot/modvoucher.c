@@ -1,12 +1,12 @@
 #include "py/mpconfig.h"
-#if MICROPY_PY_VOUCHER
-
 #include "py/objstr.h"
 #include "py/runtime.h"
 
 #include "stdio.h"
 #include "string.h"
-#include "voucher_if.h"
+#include "modvoucher.h"
+
+#if MICROPY_PY_VOUCHER
 
 STATIC mp_obj_t debug_demo(void) {
     printf("[modvoucher.c] debug_demo(): ^^\n");
@@ -225,22 +225,13 @@ STATIC mp_obj_t mp_vou_make_new(const mp_obj_type_t *type, size_t n_args, size_t
     return MP_OBJ_FROM_PTR(obj);
 }
 
-STATIC mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
+mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
     return mp_vou_make_new(type, n_args, n_kw, args, true);
 }
 
-STATIC mp_obj_t mp_vch_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
+mp_obj_t mp_vch_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
     return mp_vou_make_new(type, n_args, n_kw, args, false);
 }
-
-//
-
-STATIC mp_obj_t mp_vou_del(mp_obj_t self_in) {
-    vi_provider_free(&MP_OBJ_TO_PROVIDER_PTR(self_in));
-
-    return mp_const_none;
-}
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_del_obj, mp_vou_del);
 
 STATIC mp_obj_t mp_vou_from_cbor(mp_obj_t cbor) {
     if (!mp_obj_is_type(cbor, &mp_type_bytes)) {
@@ -248,16 +239,24 @@ STATIC mp_obj_t mp_vou_from_cbor(mp_obj_t cbor) {
     }
     GET_STR_DATA_LEN(cbor, str_data, str_len);
 
-    if (str_len > 0) {
+    if (str_len > 0) { // debug
         printf("mp_vou_from_cbor(): (cbor) data[0]: 0x%x | len: %d\n", str_data[0], str_len);
+    } else {
+        printf("mp_vou_from_cbor(): (cbor) data: %p | len: %d\n", str_data, str_len);
     }
 
-    { // !!!!--
-        return mp_const_none;
+    mp_obj_vou_t *obj = m_new_obj_with_finaliser(mp_obj_vou_t);
+    //obj->base.type = &voucher_vrq_type; // !!!! WIP
+    obj->base.type = &voucher_vch_type; // !!!! WIP
+    if (!vi_provider_allocate_from_cbor(&obj->provider, str_data, str_len)) {
+        mp_raise_ValueError(MP_ERROR_TEXT("invalid cbor voucher"));
     }
+
+    return MP_OBJ_FROM_PTR(obj);
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_from_cbor_obj, mp_vou_from_cbor);
 
+/* TODO
 STATIC mp_obj_t mp_vou_to_cbor(mp_obj_t self_in) {
 
     { // !!!!--
@@ -269,13 +268,23 @@ STATIC mp_obj_t mp_vou_to_cbor(mp_obj_t self_in) {
     }
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_to_cbor_obj, mp_vou_to_cbor);
+*/
+
+//
+
+STATIC mp_obj_t mp_vou_del(mp_obj_t self_in) {
+    vi_provider_free(&MP_OBJ_TO_PROVIDER_PTR(self_in));
+
+    return mp_const_none;
+}
+MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_del_obj, mp_vou_del);
 
 STATIC mp_obj_t mp_vou_dump(mp_obj_t self_in) {
     vi_provider_dump(MP_OBJ_TO_PROVIDER_PTR(self_in));
 
     return self_in;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_dump_obj, mp_vou_dump);
+MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_dump_obj, mp_vou_dump);
 
 STATIC mp_obj_t mp_vou_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr_val_in) {
     vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
@@ -318,7 +327,7 @@ STATIC mp_obj_t mp_vou_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr
 
     return self_in;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(mp_vou_set_obj, mp_vou_set);
+MP_DEFINE_CONST_FUN_OBJ_3(mp_vou_set_obj, mp_vou_set);
 
 STATIC mp_obj_t mp_vou_sign(mp_obj_t self_in, mp_obj_t privkey_pem, mp_obj_t alg_in) {
     if (!mp_obj_is_type(privkey_pem, &mp_type_bytes)) {
@@ -334,7 +343,7 @@ STATIC mp_obj_t mp_vou_sign(mp_obj_t self_in, mp_obj_t privkey_pem, mp_obj_t alg
 
     return self_in;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(mp_vou_sign_obj, mp_vou_sign);
+MP_DEFINE_CONST_FUN_OBJ_3(mp_vou_sign_obj, mp_vou_sign);
 
 STATIC mp_obj_t mp_vou_validate(size_t n_args, const mp_obj_t *args) {
     bool result;
@@ -351,41 +360,14 @@ STATIC mp_obj_t mp_vou_validate(size_t n_args, const mp_obj_t *args) {
 
     return mp_obj_new_bool(result);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mp_vou_validate_obj, 1, 2, mp_vou_validate);
-
-//
-
-STATIC const mp_rom_map_elem_t voucher_locals_dict_table[] = {
-    { MP_ROM_QSTR(MP_QSTR___del__), MP_ROM_PTR(&mp_vou_del_obj) },
-    { MP_ROM_QSTR(MP_QSTR_to_cbor), MP_ROM_PTR(&mp_vou_to_cbor_obj) },
-    { MP_ROM_QSTR(MP_QSTR_dump), MP_ROM_PTR(&mp_vou_dump_obj) },
-    { MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vou_set_obj) },
-    { MP_ROM_QSTR(MP_QSTR_sign), MP_ROM_PTR(&mp_vou_sign_obj) },
-    { MP_ROM_QSTR(MP_QSTR_validate), MP_ROM_PTR(&mp_vou_validate_obj) },
-};
-
-STATIC MP_DEFINE_CONST_DICT(voucher_locals_dict, voucher_locals_dict_table);
-
-STATIC const mp_obj_type_t vrq_type = {
-    { &mp_type_type },
-    .name = MP_QSTR_vrq,
-    .make_new = mp_vrq_make_new,
-    .locals_dict = (void*)&voucher_locals_dict,
-};
-
-STATIC const mp_obj_type_t vch_type = {
-    { &mp_type_type },
-    .name = MP_QSTR_vch,
-    .make_new = mp_vch_make_new,
-    .locals_dict = (void*)&voucher_locals_dict,
-};
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mp_vou_validate_obj, 1, 2, mp_vou_validate);
 
 //
 
 STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_voucher) },
-    { MP_ROM_QSTR(MP_QSTR_vrq), MP_ROM_PTR(&vrq_type) },
-    { MP_ROM_QSTR(MP_QSTR_vch), MP_ROM_PTR(&vch_type) },
+    { MP_ROM_QSTR(MP_QSTR_vrq), MP_ROM_PTR(&voucher_vrq_type) },
+    { MP_ROM_QSTR(MP_QSTR_vch), MP_ROM_PTR(&voucher_vch_type) },
     { MP_ROM_QSTR(MP_QSTR_from_cbor), MP_ROM_PTR(&mp_vou_from_cbor_obj) },
     { MP_ROM_QSTR(MP_QSTR_ATTR_ASSERTION), MP_ROM_INT(ATTR_ASSERTION) },
     { MP_ROM_QSTR(MP_QSTR_ATTR_CREATED_ON), MP_ROM_INT(ATTR_CREATED_ON) },
