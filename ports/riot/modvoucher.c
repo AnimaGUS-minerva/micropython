@@ -239,12 +239,6 @@ STATIC mp_obj_t mp_vou_from_cbor(mp_obj_t cbor) {
     }
     GET_STR_DATA_LEN(cbor, str_data, str_len);
 
-    if (str_len > 0) { // debug
-        printf("!! mp_vou_from_cbor(): (cbor) data[0]: 0x%x | len: %d\n", str_data[0], str_len);
-    } else {
-        printf("!! mp_vou_from_cbor(): (cbor) data: %p | len: %d\n", str_data, str_len);
-    }
-
     mp_obj_vou_t *obj = m_new_obj_with_finaliser(mp_obj_vou_t);
     if (!vi_provider_allocate_from_cbor(&obj->provider, str_data, str_len)) {
         mp_raise_ValueError(MP_ERROR_TEXT("bad cbor voucher"));
