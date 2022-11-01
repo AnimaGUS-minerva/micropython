@@ -286,6 +286,13 @@ STATIC mp_obj_t mp_vou_dump(mp_obj_t self_in) {
 }
 MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_dump_obj, mp_vou_dump);
 
+STATIC mp_obj_t mp_vou_len(mp_obj_t self_in) {
+    size_t len = vi_provider_len(MP_OBJ_TO_PROVIDER_PTR(self_in));
+
+    return mp_obj_new_int_from_uint(len);
+}
+MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_len_obj, mp_vou_len);
+
 STATIC mp_obj_t mp_vou_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr_val_in) {
     vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
     printf("mp_vou_set(): provider: %p\n", ptr);

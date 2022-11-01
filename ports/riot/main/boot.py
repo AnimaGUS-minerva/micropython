@@ -158,6 +158,9 @@ if 1:  # test `voucher` module
         obj_vch_f2 = voucher.from_cbor(voucher.get_vch_F2_00_02())
         obj_vrq_f2 = voucher.from_cbor(voucher.get_vrq_F2_00_02())
 
+        test_assert_eq('from_cbor() - attr len of obj_vch_jada', obj_vch_jada.len(), 6)
+        test_assert_eq('from_cbor() - attr len of obj_vch_f2', obj_vch_f2.len(), 5)
+        test_assert_eq('from_cbor() - attr len of obj_vrq_f2', obj_vrq_f2.len(), 5)
         print('type checks:', type(obj_vch_jada), type(obj_vch_f2), type(obj_vrq_f2))
         test_assert('from_cbor() - type of obj_vch_jada', isinstance(obj_vch_jada, voucher.vch))
         test_assert('from_cbor() - type of obj_vch_f2', isinstance(obj_vch_f2, voucher.vch))
