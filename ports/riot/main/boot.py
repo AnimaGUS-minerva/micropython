@@ -143,18 +143,30 @@ if 1:  # test `voucher` module
             vrq.validate(DEVICE_CRT_F2_00_02))
         test_assert('vrq.validate(KEY_PEM_F2_00_02) - with privkey PEM',
             vrq.validate(KEY_PEM_F2_00_02))
+        # vch.validate()  # !!!! without PEM (`signer_cert` is used instead)
 
-        bs_jada = voucher.get_vch_jada()  # debug
-        vou = voucher.from_cbor(bs_jada)
-        vou.dump()
-        test_assert_eq('from_cbor()', type(vou), not None)  # !!!!
-        test_assert('from_cbor()', isinstance(vou, voucher.vch))  # !!!!
+        #
+
+        try:
+            bad_cbor = b'\x11\x22\x33'
+            vou = voucher.from_cbor(bad_cbor)
+        except ValueError:
+            vou = None
+        test_assert_eq('from_cbor() - ValueError on bad cbor', vou, None)
+
+        obj_vch_jada = voucher.from_cbor(voucher.get_vch_jada())
+        obj_vch_f2 = voucher.from_cbor(voucher.get_vch_F2_00_02())
+        obj_vrq_f2 = voucher.from_cbor(voucher.get_vrq_F2_00_02())
+
+        print('type checks:', type(obj_vch_jada), type(obj_vch_f2), type(obj_vrq_f2))
+        test_assert('from_cbor() - type of obj_vch_jada', isinstance(obj_vch_jada, voucher.vch))
+        test_assert('from_cbor() - type of obj_vch_f2', isinstance(obj_vch_f2, voucher.vch))
+        test_assert('from_cbor() - type of obj_vrq_f2', isinstance(obj_vrq_f2, voucher.vrq))
 
         # vch = voucher.vch()  # ....
         # bs_cbor = vch.to_cbor()  # !!!!
         # test_assert_eq('to_cbor()', len(bs_cbor), 112233)  # !!!!
 
-        # vch.validate()  # !!!! without PEM (`signer_cert` is used instead)
 
     wip()
 
