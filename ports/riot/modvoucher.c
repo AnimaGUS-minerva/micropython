@@ -250,19 +250,18 @@ STATIC mp_obj_t mp_vou_from_cbor(mp_obj_t cbor) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_from_cbor_obj, mp_vou_from_cbor);
 
-/* TODO
 STATIC mp_obj_t mp_vou_to_cbor(mp_obj_t self_in) {
+    uint8_t *ptr_heap;
+    size_t sz_heap;
+    mp_obj_t obj;
 
-    { // !!!!--
-        uint8_t *ptr_static;
-        size_t sz;
+    sz_heap = vi_provider_to_cbor(MP_OBJ_TO_PROVIDER_PTR(self_in), &ptr_heap);
+    obj = mp_obj_new_bytes(ptr_heap, sz_heap);
+    free(ptr_heap);
 
-        sz = vi_get_voucher_jada(&ptr_static);
-        return mp_obj_new_bytes(ptr_static, sz);
-    }
+    return obj;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_to_cbor_obj, mp_vou_to_cbor);
-*/
+MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_to_cbor_obj, mp_vou_to_cbor);
 
 //
 

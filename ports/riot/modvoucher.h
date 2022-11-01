@@ -6,6 +6,7 @@
 //
 
 MP_DECLARE_CONST_FUN_OBJ_1(mp_vou_del_obj);
+MP_DECLARE_CONST_FUN_OBJ_1(mp_vou_to_cbor_obj);
 MP_DECLARE_CONST_FUN_OBJ_1(mp_vou_dump_obj);
 MP_DECLARE_CONST_FUN_OBJ_1(mp_vou_len_obj);
 MP_DECLARE_CONST_FUN_OBJ_3(mp_vou_set_obj);
@@ -14,7 +15,7 @@ MP_DECLARE_CONST_FUN_OBJ_VAR_BETWEEN(mp_vou_validate_obj);
 
 const mp_rom_map_elem_t voucher_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR___del__), MP_ROM_PTR(&mp_vou_del_obj) },
-    //{ MP_ROM_QSTR(MP_QSTR_to_cbor), MP_ROM_PTR(&mp_vou_to_cbor_obj) }, // TODO
+    { MP_ROM_QSTR(MP_QSTR_to_cbor), MP_ROM_PTR(&mp_vou_to_cbor_obj) },
     { MP_ROM_QSTR(MP_QSTR_dump), MP_ROM_PTR(&mp_vou_dump_obj) },
     { MP_ROM_QSTR(MP_QSTR_len), MP_ROM_PTR(&mp_vou_len_obj) },
     { MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vou_set_obj) },
