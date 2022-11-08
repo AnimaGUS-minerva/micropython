@@ -256,8 +256,13 @@ STATIC mp_obj_t mp_vou_to_cbor(mp_obj_t self_in) {
     mp_obj_t obj;
 
     sz_heap = vi_provider_to_cbor(MP_OBJ_TO_PROVIDER_PTR(self_in), &ptr_heap);
-    obj = mp_obj_new_bytes(ptr_heap, sz_heap);
-    free(ptr_heap);
+    if (ptr_heap != NULL) {
+        obj = mp_obj_new_bytes(ptr_heap, sz_heap);
+        free(ptr_heap);
+    } else {
+        //obj = mp_obj_new_bytes("", 0);
+        mp_raise_ValueError(MP_ERROR_TEXT("'to_cbor' operation failed"));
+    }
 
     return obj;
 }
