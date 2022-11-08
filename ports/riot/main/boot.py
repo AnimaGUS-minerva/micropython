@@ -137,7 +137,7 @@ if 1:  # test `voucher` module
         test_assert('vrq.validate(KEY_PEM_F2_00_02) - with privkey PEM, should fail (unsigned)',
             not vrq.validate(KEY_PEM_F2_00_02))
 
-        vrq.sign(KEY_PEM_F2_00_02, SA_ES256).dump()
+        vrq.sign(KEY_PEM_F2_00_02, SA_ES256)##.dump()
 
         test_assert('vrq.validate(DEVICE_CRT_F2_00_02) - with pubkey PEM',
             vrq.validate(DEVICE_CRT_F2_00_02))
@@ -171,13 +171,28 @@ if 1:  # test `voucher` module
         test_assert_eq('to_cbor() - obj_vch_f2', obj_vch_f2.to_cbor(), voucher.get_vch_F2_00_02())
         test_assert_eq('to_cbor() - obj_vrq_f2', obj_vrq_f2.to_cbor(), voucher.get_vrq_F2_00_02())
 
-        #---- TODO !!!! make `vi_provider_to_cbor()` graceful, do not panic! like
-        #    message: "called `Result::unwrap()` on an `Err` value: MissingAttributes"
-        #
-        # vch = voucher.vch()  # empty vch
-        # bs_cbor = vch.to_cbor()  # !!!!
-        # test_assert_eq('to_cbor()', len(bs_cbor), 112233)  # !!!!
+        try:
+            cbor = voucher.vch().to_cbor()
+        except ValueError:
+            cbor = None
+        test_assert_eq('to_cbor() - exception on `vch` without required attributes', cbor, None)
 
+        try:
+            cbor = voucher.vrq() \
+                          .set(ATTR_SERIAL_NUMBER, '00-D0-E5-F2-00-02') \
+                          .to_cbor()
+        except ValueError:
+            cbor = None
+        test_assert_eq('to_cbor() - exception on `vrq` without required attributes', cbor, None)
+
+        try:
+            cbor = voucher.vrq() \
+                          .set(ATTR_ASSERTION, ASSERTION_PROXIMITY) \
+                          .set(ATTR_SERIAL_NUMBER, '00-D0-E5-F2-00-02') \
+                          .to_cbor()
+        except ValueError:
+            cbor = None
+        test_assert_eq('to_cbor() - `vrq` with required attributes', len(cbor), 43)
 
     wip()
 
