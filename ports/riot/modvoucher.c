@@ -260,7 +260,6 @@ STATIC mp_obj_t mp_vou_to_cbor(mp_obj_t self_in) {
         obj = mp_obj_new_bytes(ptr_heap, sz_heap);
         free(ptr_heap);
     } else {
-        //obj = mp_obj_new_bytes("", 0);
         mp_raise_ValueError(MP_ERROR_TEXT("'to_cbor' operation failed"));
     }
 
@@ -291,35 +290,25 @@ STATIC mp_obj_t mp_vou_len(mp_obj_t self_in) {
 }
 MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_len_obj, mp_vou_len);
 
-STATIC mp_obj_t mp_vou_set(mp_obj_t self_in, mp_obj_t attr_key_in, mp_obj_t attr_val_in) {
+STATIC mp_obj_t mp_vou_set(mp_obj_t self_in, mp_obj_t attr_key, mp_obj_t attr_val) {
     vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
-    printf("mp_vou_set(): provider: %p\n", ptr);
-
-    mp_uint_t key = mp_obj_get_int(attr_key_in);
+    mp_uint_t key = mp_obj_get_int(attr_key);
 
     // Note: py/obj.h
     //   #define mp_obj_is_type(o, t) (...) // this does not work for checking int, str or fun; use below macros for that
     //   ...
     bool result;
-    if (mp_obj_is_int(attr_val_in)) { // Yang::{Enumeration,DateAndTime}
-        mp_uint_t val = mp_obj_get_int(attr_val_in);
-        printf("(int) val: %d\n", val);
+    if (mp_obj_is_int(attr_val)) { // Yang::{Enumeration,DateAndTime}
+        mp_uint_t val = mp_obj_get_int(attr_val);
         result = vi_provider_set_int(ptr, key, val);
-    } else if (mp_obj_is_bool(attr_val_in)) { // Yang::Boolean
-        bool val = mp_obj_get_int(attr_val_in);
-        printf("(bool) val: %d\n", val);
+    } else if (mp_obj_is_bool(attr_val)) { // Yang::Boolean
+        bool val = mp_obj_get_int(attr_val);
         result = vi_provider_set_bool(ptr, key, val);
-    } else if (mp_obj_is_str(attr_val_in)) { // Yang::String
-        GET_STR_DATA_LEN(attr_val_in, str_data, str_len);
-        printf("(str) data: '%s' | len: %d\n", str_data, str_len);
+    } else if (mp_obj_is_str(attr_val)) { // Yang::String
+        GET_STR_DATA_LEN(attr_val, str_data, str_len);
         result = vi_provider_set_bytes(ptr, key, str_data, str_len);
-    } else if (mp_obj_is_type(attr_val_in, &mp_type_bytes)) { // Yang::Binary
-        GET_STR_DATA_LEN(attr_val_in, str_data, str_len);
-        if (str_len > 0) {
-            printf("(bytes) data[0]: 0x%x | len: %d\n", str_data[0], str_len);
-        } else {
-            printf("(bytes) len: %d\n", str_len);
-        }
+    } else if (mp_obj_is_type(attr_val, &mp_type_bytes)) { // Yang::Binary
+        GET_STR_DATA_LEN(attr_val, str_data, str_len);
         result = vi_provider_set_bytes(ptr, key, str_data, str_len);
     } else {
         mp_raise_ValueError(MP_ERROR_TEXT("invalid 'attr_val' type"));
