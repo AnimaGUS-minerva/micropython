@@ -200,6 +200,28 @@ if 1:  # test `voucher` module
             cbor = None
         test_assert_eq('to_cbor() - `vrq` with required attributes', len(cbor), 43)
 
+        #
+
+        ### remove/get
+        vch = voucher.from_cbor(voucher.get_vch_jada())
+        vch.dump()
+
+        test_assert_eq('', vch.len(), 6)
+        test_assert_eq('', vch.get(ATTR_CREATED_ON), 1475868702)
+
+        # test_assert_eq('', vch.remove(ATTR_CREATED_ON), True)
+        # test_assert_eq('', vch.len(), 5)
+        # test_assert_eq('', vch.get(ATTR_CREATED_ON), None)
+
+        # vch.set(ATTR_CREATED_ON, 1475868702)
+        # test_assert_eq('', vch.len(), 6)
+        # test_assert_eq('', vch.get(ATTR_CREATED_ON), 1475868702)
+
+        ### iter()
+        ### set_signer_cert stuff
+
+        #
+
     wip()
 
     #
