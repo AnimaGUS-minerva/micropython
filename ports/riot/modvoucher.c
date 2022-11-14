@@ -323,6 +323,27 @@ STATIC mp_obj_t mp_vou_set(mp_obj_t self_in, mp_obj_t attr_key, mp_obj_t attr_va
 }
 MP_DEFINE_CONST_FUN_OBJ_3(mp_vou_set_obj, mp_vou_set);
 
+STATIC mp_obj_t mp_vou_get(mp_obj_t self_in, mp_obj_t attr_key) {
+//    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
+//    mp_uint_t key = mp_obj_get_int(attr_key);
+
+    //...
+
+    return mp_const_none; // !!!!
+}
+MP_DEFINE_CONST_FUN_OBJ_2(mp_vou_get_obj, mp_vou_get);
+
+STATIC mp_obj_t mp_vou_remove(mp_obj_t self_in, mp_obj_t attr_key) {
+//    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
+//    mp_uint_t key = mp_obj_get_int(attr_key);
+
+    bool result = false; // !!!!
+    //...
+
+    return mp_obj_new_bool(result); // !!!!
+}
+MP_DEFINE_CONST_FUN_OBJ_2(mp_vou_remove_obj, mp_vou_remove);
+
 STATIC mp_obj_t mp_vou_sign(mp_obj_t self_in, mp_obj_t privkey_pem, mp_obj_t alg_in) {
     if (!mp_obj_is_type(privkey_pem, &mp_type_bytes)) {
         mp_raise_ValueError(MP_ERROR_TEXT("'pem' arg must be <class 'bytes'>"));

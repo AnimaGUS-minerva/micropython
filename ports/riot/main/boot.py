@@ -209,8 +209,8 @@ if 1:  # test `voucher` module
         test_assert_eq('', vch.len(), 6)
         test_assert_eq('', vch.get(ATTR_CREATED_ON), 1475868702)
 
-        # test_assert_eq('', vch.remove(ATTR_CREATED_ON), True)
-        # test_assert_eq('', vch.len(), 5)
+        test_assert_eq('', vch.remove(ATTR_CREATED_ON), True)
+        test_assert_eq('', vch.len(), 5)
         # test_assert_eq('', vch.get(ATTR_CREATED_ON), None)
 
         # vch.set(ATTR_CREATED_ON, 1475868702)
