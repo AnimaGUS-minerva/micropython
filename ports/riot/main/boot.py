@@ -205,13 +205,19 @@ if 1:  # test `voucher` module
         vch = voucher.from_cbor(voucher.get_vch_jada())
         vch.dump()
 
-        # `.get()` - `int` attrs
+        # `.get()` `int` attrs
         test_assert_eq('get - ATTR_ASSERTION', vch.get(ATTR_ASSERTION), ASSERTION_PROXIMITY)
         test_assert_eq('get - ATTR_CREATED_ON', vch.get(ATTR_CREATED_ON), 1475868702)
         test_assert_eq('get - ATTR_EXPIRES_ON', vch.get(ATTR_EXPIRES_ON), 1506816000)
-        # `.get()` - `bool` attrs
-        #...
-        # `.get()` - `bytes` attrs
+        test_assert_eq('get - ATTR_LAST_RENEWAL_DATE', vch.get(ATTR_LAST_RENEWAL_DATE), None)
+        # `.get()` `bool` attrs
+        test_assert_eq('get - ATTR_DOMAIN_CERT_REVOCATION_CHECKS', vch.get(ATTR_DOMAIN_CERT_REVOCATION_CHECKS), None)
+        v = voucher.vrq().set(ATTR_DOMAIN_CERT_REVOCATION_CHECKS, True)
+        test_assert_eq('get - ATTR_DOMAIN_CERT_REVOCATION_CHECKS', v.get(ATTR_DOMAIN_CERT_REVOCATION_CHECKS), True)
+        v.set(ATTR_DOMAIN_CERT_REVOCATION_CHECKS, False)
+        test_assert_eq('get - ATTR_DOMAIN_CERT_REVOCATION_CHECKS', v.get(ATTR_DOMAIN_CERT_REVOCATION_CHECKS), False)
+
+        # `.get()` `bytes` attrs
         #...
 
         # `.remove()`

@@ -340,8 +340,7 @@ STATIC mp_obj_t mp_vou_get(mp_obj_t self_in, mp_obj_t attr_key) {
         }
 
         case ATTR_DOMAIN_CERT_REVOCATION_CHECKS: {
-            // vi_provider_get_bool()
-            return mp_obj_new_bool(false); // !!!! !!!!
+            return mp_obj_new_bool(vi_provider_get_bool_or_panic(ptr, key));
         }
 
         case ATTR_IDEVID_ISSUER:
