@@ -353,8 +353,19 @@ STATIC mp_obj_t mp_vou_get(mp_obj_t self_in, mp_obj_t attr_key) {
         case ATTR_PROXIMITY_REGISTRAR_PUBK:
         case ATTR_PROXIMITY_REGISTRAR_PUBK_SHA256:
         case ATTR_SERIAL_NUMBER: {
-            // vi_provider_get_bytes()
-            return mp_obj_new_bytes("xxxx", 4); // !!!!
+            uint8_t *ptr_heap;
+            size_t sz_heap;
+            mp_obj_t obj;
+
+            sz_heap = vi_provider_get_bytes_or_panic(ptr, key, &ptr_heap);
+            if (ptr_heap != NULL) {
+                obj = mp_obj_new_bytes(ptr_heap, sz_heap);
+                free(ptr_heap);
+            } else {
+                obj = mp_obj_new_bytes("", 0);
+            }
+
+            return obj;
         }
     }
     mp_raise_ValueError(MP_ERROR_TEXT("invalid 'attr_key' value"));
