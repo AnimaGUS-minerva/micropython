@@ -250,16 +250,26 @@ STATIC mp_obj_t mp_vou_from_cbor(mp_obj_t cbor) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_from_cbor_obj, mp_vou_from_cbor);
 
-STATIC mp_obj_t mp_vou_to_cbor(mp_obj_t self_in) {
-    uint8_t *ptr_heap;
-    size_t sz_heap;
+STATIC mp_obj_t into_obj_bytes(uint8_t **pp, size_t sz) {
     mp_obj_t obj;
 
-    sz_heap = vi_provider_to_cbor(MP_OBJ_TO_PROVIDER_PTR(self_in), &ptr_heap);
-    if (ptr_heap != NULL) {
-        obj = mp_obj_new_bytes(ptr_heap, sz_heap);
-        free(ptr_heap);
+    if (*pp != NULL) {
+        obj = mp_obj_new_bytes(*pp, sz);
+        free(*pp);
+        *pp = NULL;
     } else {
+        obj = mp_const_none;
+    }
+
+    return obj;
+}
+
+STATIC mp_obj_t mp_vou_to_cbor(mp_obj_t self_in) {
+    uint8_t *ptr_heap;
+    size_t sz_heap = vi_provider_to_cbor(MP_OBJ_TO_PROVIDER_PTR(self_in), &ptr_heap);
+
+    mp_obj_t obj = into_obj_bytes(&ptr_heap, sz_heap);
+    if (obj == mp_const_none) {
         mp_raise_ValueError(MP_ERROR_TEXT("'to_cbor' operation failed"));
     }
 
@@ -354,18 +364,10 @@ STATIC mp_obj_t mp_vou_get(mp_obj_t self_in, mp_obj_t attr_key) {
         case ATTR_PROXIMITY_REGISTRAR_PUBK_SHA256:
         case ATTR_SERIAL_NUMBER: {
             uint8_t *ptr_heap;
-            size_t sz_heap;
-            mp_obj_t obj;
+            size_t sz_heap = vi_provider_get_bytes_or_panic(ptr, key, &ptr_heap);
 
-            sz_heap = vi_provider_get_bytes_or_panic(ptr, key, &ptr_heap);
-            if (ptr_heap != NULL) {
-                obj = mp_obj_new_bytes(ptr_heap, sz_heap);
-                free(ptr_heap);
-            } else {
-                obj = mp_obj_new_bytes("", 0);
-            }
-
-            return obj;
+            mp_obj_t obj = into_obj_bytes(&ptr_heap, sz_heap);
+            return obj != mp_const_none ? obj : mp_obj_new_bytes("", 0);
         }
     }
     mp_raise_ValueError(MP_ERROR_TEXT("invalid 'attr_key' value"));
