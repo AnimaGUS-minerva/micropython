@@ -164,7 +164,7 @@ if 1:  # test `voucher` module
         obj_vch_f2 = voucher.from_cbor(voucher.get_vch_F2_00_02())
         obj_vrq_f2 = voucher.from_cbor(voucher.get_vrq_F2_00_02())
 
-        print('type checks:', type(obj_vch_jada), type(obj_vch_f2), type(obj_vrq_f2))
+        print('* type checks:', type(obj_vch_jada), type(obj_vch_f2), type(obj_vrq_f2))
         test_assert('from_cbor() - type of obj_vch_jada', isinstance(obj_vch_jada, voucher.vch))
         test_assert('from_cbor() - type of obj_vch_f2', isinstance(obj_vch_f2, voucher.vch))
         test_assert('from_cbor() - type of obj_vrq_f2', isinstance(obj_vrq_f2, voucher.vrq))
@@ -205,25 +205,35 @@ if 1:  # test `voucher` module
         vch = voucher.from_cbor(voucher.get_vch_jada())
         vch.dump()
 
-        # `.get()` `int` attrs
+        print('* `.get()` `int` attributes in vch_jada')
         test_assert_eq('get - ATTR_ASSERTION', vch.get(ATTR_ASSERTION), ASSERTION_PROXIMITY)
         test_assert_eq('get - ATTR_CREATED_ON', vch.get(ATTR_CREATED_ON), 1475868702)
         test_assert_eq('get - ATTR_EXPIRES_ON', vch.get(ATTR_EXPIRES_ON), 1506816000)
-        test_assert_eq('get - ATTR_LAST_RENEWAL_DATE', vch.get(ATTR_LAST_RENEWAL_DATE), None)
-        # `.get()` `bool` attrs
+        test_assert_eq('get - None for ATTR_LAST_RENEWAL_DATE', vch.get(ATTR_LAST_RENEWAL_DATE), None)
+
+        print('* `.get()` `bool` attributes in vch_jada')
         test_assert_eq('get - ATTR_DOMAIN_CERT_REVOCATION_CHECKS', vch.get(ATTR_DOMAIN_CERT_REVOCATION_CHECKS), None)
+
         v = voucher.vrq().set(ATTR_DOMAIN_CERT_REVOCATION_CHECKS, True)
         test_assert_eq('get - ATTR_DOMAIN_CERT_REVOCATION_CHECKS', v.get(ATTR_DOMAIN_CERT_REVOCATION_CHECKS), True)
         v.set(ATTR_DOMAIN_CERT_REVOCATION_CHECKS, False)
         test_assert_eq('get - ATTR_DOMAIN_CERT_REVOCATION_CHECKS', v.get(ATTR_DOMAIN_CERT_REVOCATION_CHECKS), False)
 
-        # `.get()` `bytes` attrs
-        #...
+        print('* `.get()` `bytes` attributes in vch_jada')
+        test_assert_eq('get - None for ATTR_IDEVID_ISSUER', vch.get(ATTR_IDEVID_ISSUER), None)
+        test_assert_eq('get - ATTR_NONCE', vch.get(ATTR_NONCE), b'abcd12345')
+        test_assert_eq('get - None for ATTR_PINNED_DOMAIN_CERT', vch.get(ATTR_PINNED_DOMAIN_CERT), None)
+        test_assert_eq('get - ATTR_PINNED_DOMAIN_PUBK_SHA256', vch.get(ATTR_PINNED_DOMAIN_PUBK_SHA256), None)
+        test_assert_eq('get - None for ATTR_PRIOR_SIGNED_VOUCHER_REQUEST', vch.get(ATTR_PRIOR_SIGNED_VOUCHER_REQUEST), None)
+        test_assert_eq('get - None for ATTR_PROXIMITY_REGISTRAR_CERT', vch.get(ATTR_PROXIMITY_REGISTRAR_CERT), None)
+        test_assert_eq('get - None for ATTR_PROXIMITY_REGISTRAR_PUBK', vch.get(ATTR_PROXIMITY_REGISTRAR_PUBK), None)
+        test_assert_eq('get - None for ATTR_PROXIMITY_REGISTRAR_PUBK_SHA256', vch.get(ATTR_PROXIMITY_REGISTRAR_PUBK_SHA256), None)
+        test_assert_eq('get - ATTR_SERIAL_NUMBER', vch.get(ATTR_SERIAL_NUMBER), b'JADA123456789')
 
         # `.remove()`
-        test_assert_eq('remove -', vch.len(), 6)
-        test_assert_eq('remove -', vch.remove(ATTR_CREATED_ON), True)
-        test_assert_eq('remove -', vch.len(), 5)
+        # test_assert_eq('remove -', vch.len(), 6)
+        # test_assert_eq('remove -', vch.remove(ATTR_CREATED_ON), True)
+        # test_assert_eq('remove -', vch.len(), 5)
         # test_assert_eq(remove -'', vch.get(ATTR_CREATED_ON), None)
 
         # vch.set(ATTR_CREATED_ON, 1475868702)
