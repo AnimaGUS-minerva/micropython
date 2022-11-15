@@ -202,16 +202,23 @@ if 1:  # test `voucher` module
 
         #
 
-        ### remove/get
         vch = voucher.from_cbor(voucher.get_vch_jada())
         vch.dump()
 
-        test_assert_eq('', vch.len(), 6)
-        test_assert_eq('', vch.get(ATTR_CREATED_ON), 1475868702)
+        # `.get()` - `int` attrs
+        test_assert_eq('get - ATTR_ASSERTION', vch.get(ATTR_ASSERTION), ASSERTION_PROXIMITY)
+        test_assert_eq('get - ATTR_CREATED_ON', vch.get(ATTR_CREATED_ON), 1475868702)
+        test_assert_eq('get - ATTR_EXPIRES_ON', vch.get(ATTR_EXPIRES_ON), 1506816000)
+        # `.get()` - `bool` attrs
+        #...
+        # `.get()` - `bytes` attrs
+        #...
 
-        test_assert_eq('', vch.remove(ATTR_CREATED_ON), True)
-        test_assert_eq('', vch.len(), 5)
-        # test_assert_eq('', vch.get(ATTR_CREATED_ON), None)
+        # `.remove()`
+        test_assert_eq('remove -', vch.len(), 6)
+        test_assert_eq('remove -', vch.remove(ATTR_CREATED_ON), True)
+        test_assert_eq('remove -', vch.len(), 5)
+        # test_assert_eq(remove -'', vch.get(ATTR_CREATED_ON), None)
 
         # vch.set(ATTR_CREATED_ON, 1475868702)
         # test_assert_eq('', vch.len(), 6)

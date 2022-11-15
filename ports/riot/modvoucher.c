@@ -327,13 +327,16 @@ STATIC mp_obj_t mp_vou_get(mp_obj_t self_in, mp_obj_t attr_key) {
     vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
     mp_uint_t key = mp_obj_get_int(attr_key);
 
+    if (!vi_provider_has(ptr, key)) {
+        return mp_const_none;
+    }
+
     switch (key) {
         case ATTR_ASSERTION:
         case ATTR_CREATED_ON:
         case ATTR_EXPIRES_ON:
         case ATTR_LAST_RENEWAL_DATE: {
-            return vi_provider_has(ptr, key) ?
-                mp_obj_new_int_from_uint(vi_provider_get_int(ptr, key)) : mp_const_none;
+            return mp_obj_new_int_from_uint(vi_provider_get_int_or_panic(ptr, key));
         }
 
         case ATTR_DOMAIN_CERT_REVOCATION_CHECKS: {
