@@ -230,15 +230,13 @@ if 1:  # test `voucher` module
         test_assert_eq('get - None for ATTR_PROXIMITY_REGISTRAR_PUBK_SHA256', vch.get(ATTR_PROXIMITY_REGISTRAR_PUBK_SHA256), None)
         test_assert_eq('get - ATTR_SERIAL_NUMBER', vch.get(ATTR_SERIAL_NUMBER), b'JADA123456789')
 
-        # `.remove()`
-        # test_assert_eq('remove -', vch.len(), 6)
-        # test_assert_eq('remove -', vch.remove(ATTR_CREATED_ON), True)
-        # test_assert_eq('remove -', vch.len(), 5)
-        # test_assert_eq(remove -'', vch.get(ATTR_CREATED_ON), None)
-
-        # vch.set(ATTR_CREATED_ON, 1475868702)
-        # test_assert_eq('', vch.len(), 6)
-        # test_assert_eq('', vch.get(ATTR_CREATED_ON), 1475868702)
+        print('* `.remove()` attributes in vch_jada')
+        test_assert_eq('remove - # of attributes before', vch.len(), 6)
+        test_assert_eq('remove - ATTR_CREATED_ON', vch.remove(ATTR_CREATED_ON), True)
+        test_assert_eq('remove - # of attributes after', vch.len(), 5)
+        test_assert_eq('remove - ATTR_CREATED_ON not exist on get', vch.get(ATTR_CREATED_ON), None)
+        test_assert_eq('remove - ATTR_CREATED_ON not exist on remove', vch.remove(ATTR_CREATED_ON), False)
+        test_assert_eq('remove - False for ATTR_LAST_RENEWAL_DATE', vch.remove(ATTR_LAST_RENEWAL_DATE), False)
 
         ### iter()
         ### set_signer_cert stuff
