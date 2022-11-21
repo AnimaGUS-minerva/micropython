@@ -337,40 +337,18 @@ STATIC mp_obj_t mp_vou_get(mp_obj_t self_in, mp_obj_t attr_key) {
     vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
     mp_uint_t key = mp_obj_get_int(attr_key);
 
-    if (!vi_provider_has(ptr, key)) {
+    if (vi_provider_has_attr_int(ptr, key)) {
+        return mp_obj_new_int_from_uint(vi_provider_get_attr_int_or_panic(ptr, key));
+    } else if (vi_provider_has_attr_bool(ptr, key)) {
+        return mp_obj_new_bool(vi_provider_get_attr_bool_or_panic(ptr, key));
+    } else if (vi_provider_has_attr_bytes(ptr, key)) {
+        uint8_t *ptr_heap;
+        size_t sz_heap = vi_provider_get_attr_bytes_or_panic(ptr, key, &ptr_heap);
+        mp_obj_t obj = into_obj_bytes(&ptr_heap, sz_heap);
+        return obj != mp_const_none ? obj : mp_obj_new_bytes("", 0);
+    } else {
         return mp_const_none;
     }
-
-    switch (key) {
-        case ATTR_ASSERTION:
-        case ATTR_CREATED_ON:
-        case ATTR_EXPIRES_ON:
-        case ATTR_LAST_RENEWAL_DATE: {
-            return mp_obj_new_int_from_uint(vi_provider_get_int_or_panic(ptr, key));
-        }
-
-        case ATTR_DOMAIN_CERT_REVOCATION_CHECKS: {
-            return mp_obj_new_bool(vi_provider_get_bool_or_panic(ptr, key));
-        }
-
-        case ATTR_IDEVID_ISSUER:
-        case ATTR_NONCE:
-        case ATTR_PINNED_DOMAIN_CERT:
-        case ATTR_PINNED_DOMAIN_PUBK:
-        case ATTR_PINNED_DOMAIN_PUBK_SHA256:
-        case ATTR_PRIOR_SIGNED_VOUCHER_REQUEST:
-        case ATTR_PROXIMITY_REGISTRAR_CERT:
-        case ATTR_PROXIMITY_REGISTRAR_PUBK:
-        case ATTR_PROXIMITY_REGISTRAR_PUBK_SHA256:
-        case ATTR_SERIAL_NUMBER: {
-            uint8_t *ptr_heap;
-            size_t sz_heap = vi_provider_get_bytes_or_panic(ptr, key, &ptr_heap);
-
-            mp_obj_t obj = into_obj_bytes(&ptr_heap, sz_heap);
-            return obj != mp_const_none ? obj : mp_obj_new_bytes("", 0);
-        }
-    }
-    mp_raise_ValueError(MP_ERROR_TEXT("invalid 'attr_key' value"));
 }
 MP_DEFINE_CONST_FUN_OBJ_2(mp_vou_get_obj, mp_vou_get);
 
