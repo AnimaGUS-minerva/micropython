@@ -310,16 +310,16 @@ STATIC mp_obj_t mp_vou_set(mp_obj_t self_in, mp_obj_t attr_key, mp_obj_t attr_va
     bool result;
     if (mp_obj_is_int(attr_val)) { // Yang::{Enumeration,DateAndTime}
         mp_uint_t val = mp_obj_get_int(attr_val);
-        result = vi_provider_set_int(ptr, key, val);
+        result = vi_provider_set_attr_int(ptr, key, val);
     } else if (mp_obj_is_bool(attr_val)) { // Yang::Boolean
         bool val = mp_obj_get_int(attr_val);
-        result = vi_provider_set_bool(ptr, key, val);
+        result = vi_provider_set_attr_bool(ptr, key, val);
     } else if (mp_obj_is_str(attr_val)) { // Yang::String
         GET_STR_DATA_LEN(attr_val, str_data, str_len);
-        result = vi_provider_set_bytes(ptr, key, str_data, str_len);
+        result = vi_provider_set_attr_bytes(ptr, key, str_data, str_len);
     } else if (mp_obj_is_type(attr_val, &mp_type_bytes)) { // Yang::Binary
         GET_STR_DATA_LEN(attr_val, str_data, str_len);
-        result = vi_provider_set_bytes(ptr, key, str_data, str_len);
+        result = vi_provider_set_attr_bytes(ptr, key, str_data, str_len);
     } else {
         mp_raise_ValueError(MP_ERROR_TEXT("invalid 'attr_val' type"));
     }
@@ -345,6 +345,7 @@ STATIC mp_obj_t mp_vou_get(mp_obj_t self_in, mp_obj_t attr_key) {
         uint8_t *ptr_heap;
         size_t sz_heap = vi_provider_get_attr_bytes_or_panic(ptr, key, &ptr_heap);
         mp_obj_t obj = into_obj_bytes(&ptr_heap, sz_heap);
+
         return obj != mp_const_none ? obj : mp_obj_new_bytes("", 0);
     } else {
         return mp_const_none;
@@ -353,13 +354,10 @@ STATIC mp_obj_t mp_vou_get(mp_obj_t self_in, mp_obj_t attr_key) {
 MP_DEFINE_CONST_FUN_OBJ_2(mp_vou_get_obj, mp_vou_get);
 
 STATIC mp_obj_t mp_vou_remove(mp_obj_t self_in, mp_obj_t attr_key) {
-//    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
-//    mp_uint_t key = mp_obj_get_int(attr_key);
+    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
+    mp_uint_t key = mp_obj_get_int(attr_key);
 
-    bool result = false; // !!!!
-    //...
-
-    return mp_obj_new_bool(result); // !!!!
+    return mp_obj_new_bool(vi_provider_remove_attr(ptr, key));
 }
 MP_DEFINE_CONST_FUN_OBJ_2(mp_vou_remove_obj, mp_vou_remove);
 
