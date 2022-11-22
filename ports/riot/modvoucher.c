@@ -337,19 +337,21 @@ STATIC mp_obj_t mp_vou_get(mp_obj_t self_in, mp_obj_t attr_key) {
     vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
     mp_uint_t key = mp_obj_get_int(attr_key);
 
+    mp_obj_t obj;
     if (vi_provider_has_attr_int(ptr, key)) {
-        return mp_obj_new_int_from_uint(vi_provider_get_attr_int_or_panic(ptr, key));
+        obj = mp_obj_new_int_from_uint(vi_provider_get_attr_int_or_panic(ptr, key));
     } else if (vi_provider_has_attr_bool(ptr, key)) {
-        return mp_obj_new_bool(vi_provider_get_attr_bool_or_panic(ptr, key));
+        obj = mp_obj_new_bool(vi_provider_get_attr_bool_or_panic(ptr, key));
     } else if (vi_provider_has_attr_bytes(ptr, key)) {
         uint8_t *ptr_heap;
         size_t sz_heap = vi_provider_get_attr_bytes_or_panic(ptr, key, &ptr_heap);
-        mp_obj_t obj = into_obj_bytes(&ptr_heap, sz_heap);
-
-        return obj != mp_const_none ? obj : mp_obj_new_bytes("", 0);
+        mp_obj_t obj_bytes = into_obj_bytes(&ptr_heap, sz_heap);
+        obj = obj_bytes != mp_const_none ? obj_bytes : mp_obj_new_bytes("", 0);
     } else {
-        return mp_const_none;
+        obj = mp_const_none;
     }
+
+    return obj;
 }
 MP_DEFINE_CONST_FUN_OBJ_2(mp_vou_get_obj, mp_vou_get);
 
