@@ -33,11 +33,14 @@ MP_DEFINE_CONST_DICT(voucher_locals_dict, voucher_locals_dict_table);
 
 mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args);
 mp_obj_t mp_vch_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args);
+mp_obj_t mp_vou_getiter(mp_obj_t o_in, mp_obj_iter_buf_t *iter_buf); // !! clean up
 
 const mp_obj_type_t voucher_vrq_type = {
     { &mp_type_type },
     .name = MP_QSTR_vrq,
     .make_new = mp_vrq_make_new,
+    .getiter = mp_vou_getiter,
+    //.subscr = mp_vou_subscr,
     .locals_dict = (void*)&voucher_locals_dict,
 };
 
@@ -45,6 +48,8 @@ const mp_obj_type_t voucher_vch_type = {
     { &mp_type_type },
     .name = MP_QSTR_vch,
     .make_new = mp_vch_make_new,
+    .getiter = mp_vou_getiter,
+    //.subscr = mp_vou_subscr,
     .locals_dict = (void*)&voucher_locals_dict,
 };
 

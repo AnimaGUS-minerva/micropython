@@ -238,8 +238,18 @@ if 1:  # test `voucher` module
         test_assert_eq('remove - ATTR_CREATED_ON not exist on remove', vch.remove(ATTR_CREATED_ON), False)
         test_assert_eq('remove - False for ATTR_LAST_RENEWAL_DATE', vch.remove(ATTR_LAST_RENEWAL_DATE), False)
 
-        ### iter()
-        ### set_signer_cert stuff
+        ### `.getiter`
+        print('!!!! before')
+        for attr in vch:
+            print('attr:', attr)
+        print('!!!! after')
+
+
+        ### `.subscr`
+        ### `.print`
+
+        ### set_signer_cert stuff, getter for CoseSig fields
+        ### refactor with 'modvoucher_debug.c'
 
         #
 
