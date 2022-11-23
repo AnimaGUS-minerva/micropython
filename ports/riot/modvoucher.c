@@ -374,18 +374,23 @@ typedef struct _mp_obj_itarray_it_t {
 
 STATIC mp_obj_t itarray_iternext(mp_obj_t self_in) {
     mp_obj_itarray_it_t *self = MP_OBJ_TO_PTR(self_in);
-
     vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self->itarray);
-
-    if (self->cur == 0) { vi_provider_dump(ptr); } // !! debug
+    mp_obj_t obj;
 
     if (self->cur < vi_provider_len(ptr)) {
         mp_uint_t key = vi_provider_attr_key_at(ptr, self->cur);
         self->cur += 1;
-        return mp_vou_get_inner(ptr, key); // !!!! --> tuple with `mp_obj_get_int(key)`
+
+        mp_obj_t tpl[2] = {
+            mp_obj_new_int_from_uint(key),
+            mp_vou_get_inner(ptr, key),
+        };
+        obj = mp_obj_new_tuple(2, tpl);
     } else {
-        return MP_OBJ_STOP_ITERATION;
+        obj = MP_OBJ_STOP_ITERATION;
     }
+
+    return obj;
 }
 
 mp_obj_t mp_vou_getiter(mp_obj_t o_in, mp_obj_iter_buf_t *iter_buf) {

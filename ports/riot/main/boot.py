@@ -239,9 +239,12 @@ if 1:  # test `voucher` module
         test_assert_eq('remove - False for ATTR_LAST_RENEWAL_DATE', vch.remove(ATTR_LAST_RENEWAL_DATE), False)
 
         ### `.getiter`
+        vch.dump()  # debug
         print('!!!! before')
-        for attr in vch:
-            print('attr:', attr)
+        for kv in vch:
+            print('attr - kv:', kv)
+        for item in enumerate(vch):
+            print('attr - (at, kv):', item)
         print('!!!! after')
 
 
