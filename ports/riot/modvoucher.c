@@ -233,55 +233,6 @@ mp_obj_t mp_vch_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, 
     return mp_vou_make_new(type, n_args, n_kw, args, false);
 }
 
-//==== ==== ==== ==== !!!! WIP
-typedef struct _itarray_obj_t {
-    mp_obj_base_t base;
-    mp_fun_1_t iternext;
-    uint16_t *elements; // @@ !!!!
-    size_t len;
-} itarray_obj_t;
-
-typedef struct _mp_obj_itarray_it_t {
-    mp_obj_base_t base;
-    mp_fun_1_t iternext;
-    mp_obj_t itarray; // @@ !!!!
-    size_t cur;
-} mp_obj_itarray_it_t;
-
-STATIC mp_obj_t itarray_iternext(mp_obj_t self_in) {
-    mp_obj_itarray_it_t *self = MP_OBJ_TO_PTR(self_in);
-
-    //==== https://micropython-usermod.readthedocs.io/en/latest/usermods_11.html#creating-iterables
-    itarray_obj_t *itarray = MP_OBJ_TO_PTR(self->itarray);
-    //==== @@
-    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self->itarray); // !!!!
-    vi_provider_dump(ptr); // !!!! ok
-    //====
-
-    if (self->cur < itarray->len) {
-        // read the current value
-        uint16_t *arr = itarray->elements;
-        mp_obj_t o_out = MP_OBJ_NEW_SMALL_INT(arr[self->cur]);
-        self->cur += 1;
-        return o_out;
-    } else {
-        return MP_OBJ_STOP_ITERATION;
-    }
-}
-
-mp_obj_t mp_vou_getiter(mp_obj_t o_in, mp_obj_iter_buf_t *iter_buf) {
-    assert(sizeof(mp_obj_itarray_it_t) <= sizeof(mp_obj_iter_buf_t));
-
-    mp_obj_itarray_it_t *o = (mp_obj_itarray_it_t*)iter_buf;
-    o->base.type = &mp_type_polymorph_iter;
-    o->iternext = itarray_iternext;
-    o->itarray = o_in;
-    o->cur = 0;
-
-    return MP_OBJ_FROM_PTR(o);
-}
-//==== ==== ==== ====
-
 STATIC mp_obj_t mp_vou_from_cbor(mp_obj_t cbor) {
     if (!mp_obj_is_type(cbor, &mp_type_bytes)) {
         mp_raise_ValueError(MP_ERROR_TEXT("'cbor' arg must be <class 'bytes'>"));
@@ -382,11 +333,9 @@ STATIC mp_obj_t mp_vou_set(mp_obj_t self_in, mp_obj_t attr_key, mp_obj_t attr_va
 }
 MP_DEFINE_CONST_FUN_OBJ_3(mp_vou_set_obj, mp_vou_set);
 
-STATIC mp_obj_t mp_vou_get(mp_obj_t self_in, mp_obj_t attr_key) {
-    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
-    mp_uint_t key = mp_obj_get_int(attr_key);
-
+STATIC mp_obj_t mp_vou_get_inner(vi_provider_t *ptr, mp_uint_t key) {
     mp_obj_t obj;
+
     if (vi_provider_has_attr_int(ptr, key)) {
         obj = mp_obj_new_int_from_uint(vi_provider_get_attr_int_or_panic(ptr, key));
     } else if (vi_provider_has_attr_bool(ptr, key)) {
@@ -402,7 +351,55 @@ STATIC mp_obj_t mp_vou_get(mp_obj_t self_in, mp_obj_t attr_key) {
 
     return obj;
 }
+
+STATIC mp_obj_t mp_vou_get(mp_obj_t self_in, mp_obj_t attr_key) {
+    return mp_vou_get_inner(MP_OBJ_TO_PROVIDER_PTR(self_in), mp_obj_get_int(attr_key));
+}
 MP_DEFINE_CONST_FUN_OBJ_2(mp_vou_get_obj, mp_vou_get);
+
+//====
+typedef struct _itarray_obj_t {
+    mp_obj_base_t base;
+    mp_fun_1_t iternext;
+    uint16_t *elements; // @@ !!!!
+    size_t len;
+} itarray_obj_t;
+
+typedef struct _mp_obj_itarray_it_t {
+    mp_obj_base_t base;
+    mp_fun_1_t iternext;
+    mp_obj_t itarray; // @@ !!!!
+    size_t cur;
+} mp_obj_itarray_it_t;
+
+STATIC mp_obj_t itarray_iternext(mp_obj_t self_in) {
+    mp_obj_itarray_it_t *self = MP_OBJ_TO_PTR(self_in);
+
+    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self->itarray);
+
+    if (self->cur == 0) { vi_provider_dump(ptr); } // !! debug
+
+    if (self->cur < vi_provider_len(ptr)) {
+        mp_uint_t key = vi_provider_attr_key_at(ptr, self->cur);
+        self->cur += 1;
+        return mp_vou_get_inner(ptr, key); // !!!! --> tuple with `mp_obj_get_int(key)`
+    } else {
+        return MP_OBJ_STOP_ITERATION;
+    }
+}
+
+mp_obj_t mp_vou_getiter(mp_obj_t o_in, mp_obj_iter_buf_t *iter_buf) {
+    assert(sizeof(mp_obj_itarray_it_t) <= sizeof(mp_obj_iter_buf_t));
+
+    mp_obj_itarray_it_t *o = (mp_obj_itarray_it_t*)iter_buf;
+    o->base.type = &mp_type_polymorph_iter;
+    o->iternext = itarray_iternext;
+    o->itarray = o_in;
+    o->cur = 0;
+
+    return MP_OBJ_FROM_PTR(o);
+}
+//====
 
 STATIC mp_obj_t mp_vou_remove(mp_obj_t self_in, mp_obj_t attr_key) {
     vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);

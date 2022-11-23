@@ -41,6 +41,7 @@ const mp_obj_type_t voucher_vrq_type = {
     .make_new = mp_vrq_make_new,
     .getiter = mp_vou_getiter,
     //.subscr = mp_vou_subscr,
+    //.print = mp_vou_print,
     .locals_dict = (void*)&voucher_locals_dict,
 };
 
@@ -50,6 +51,7 @@ const mp_obj_type_t voucher_vch_type = {
     .make_new = mp_vch_make_new,
     .getiter = mp_vou_getiter,
     //.subscr = mp_vou_subscr,
+    //.print = mp_vou_print,
     .locals_dict = (void*)&voucher_locals_dict,
 };
 
