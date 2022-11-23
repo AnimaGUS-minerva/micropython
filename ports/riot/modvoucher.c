@@ -333,7 +333,7 @@ STATIC mp_obj_t mp_vou_set(mp_obj_t self_in, mp_obj_t attr_key, mp_obj_t attr_va
 }
 MP_DEFINE_CONST_FUN_OBJ_3(mp_vou_set_obj, mp_vou_set);
 
-STATIC mp_obj_t mp_vou_get_inner(vi_provider_t *ptr, mp_uint_t key) {
+STATIC mp_obj_t vou_get_inner(vi_provider_t *ptr, mp_uint_t key) {
     mp_obj_t obj;
 
     if (vi_provider_has_attr_int(ptr, key)) {
@@ -353,38 +353,29 @@ STATIC mp_obj_t mp_vou_get_inner(vi_provider_t *ptr, mp_uint_t key) {
 }
 
 STATIC mp_obj_t mp_vou_get(mp_obj_t self_in, mp_obj_t attr_key) {
-    return mp_vou_get_inner(MP_OBJ_TO_PROVIDER_PTR(self_in), mp_obj_get_int(attr_key));
+    return vou_get_inner(MP_OBJ_TO_PROVIDER_PTR(self_in), mp_obj_get_int(attr_key));
 }
 MP_DEFINE_CONST_FUN_OBJ_2(mp_vou_get_obj, mp_vou_get);
 
-//====
-typedef struct _itarray_obj_t {
-    mp_obj_base_t base;
-    mp_fun_1_t iternext;
-    uint16_t *elements; // @@ !!!!
-    size_t len;
-} itarray_obj_t;
+//
 
-typedef struct _mp_obj_itarray_it_t {
+typedef struct _mp_obj_vou_iter_t {
     mp_obj_base_t base;
     mp_fun_1_t iternext;
-    mp_obj_t itarray; // @@ !!!!
+    mp_obj_t vou;
     size_t cur;
-} mp_obj_itarray_it_t;
+} mp_obj_vou_iter_t;
 
-STATIC mp_obj_t itarray_iternext(mp_obj_t self_in) {
-    mp_obj_itarray_it_t *self = MP_OBJ_TO_PTR(self_in);
-    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self->itarray);
+STATIC mp_obj_t vou_iterernext(mp_obj_t self_in) {
+    mp_obj_vou_iter_t *self = MP_OBJ_TO_PTR(self_in);
+    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self->vou);
+
     mp_obj_t obj;
-
     if (self->cur < vi_provider_len(ptr)) {
         mp_uint_t key = vi_provider_attr_key_at(ptr, self->cur);
         self->cur += 1;
 
-        mp_obj_t tpl[2] = {
-            mp_obj_new_int_from_uint(key),
-            mp_vou_get_inner(ptr, key),
-        };
+        mp_obj_t tpl[2] = { mp_obj_new_int_from_uint(key), vou_get_inner(ptr, key) };
         obj = mp_obj_new_tuple(2, tpl);
     } else {
         obj = MP_OBJ_STOP_ITERATION;
@@ -393,18 +384,19 @@ STATIC mp_obj_t itarray_iternext(mp_obj_t self_in) {
     return obj;
 }
 
-mp_obj_t mp_vou_getiter(mp_obj_t o_in, mp_obj_iter_buf_t *iter_buf) {
-    assert(sizeof(mp_obj_itarray_it_t) <= sizeof(mp_obj_iter_buf_t));
+mp_obj_t mp_vou_getiter(mp_obj_t obj_in, mp_obj_iter_buf_t *iter_buf) {
+    assert(sizeof(mp_obj_vou_iter_t) <= sizeof(mp_obj_iter_buf_t));
 
-    mp_obj_itarray_it_t *o = (mp_obj_itarray_it_t*)iter_buf;
-    o->base.type = &mp_type_polymorph_iter;
-    o->iternext = itarray_iternext;
-    o->itarray = o_in;
-    o->cur = 0;
+    mp_obj_vou_iter_t *obj_iter = (mp_obj_vou_iter_t *)iter_buf;
+    obj_iter->base.type = &mp_type_polymorph_iter;
+    obj_iter->iternext = vou_iterernext;
+    obj_iter->vou = obj_in;
+    obj_iter->cur = 0;
 
-    return MP_OBJ_FROM_PTR(o);
+    return MP_OBJ_FROM_PTR(obj_iter);
 }
-//====
+
+//
 
 STATIC mp_obj_t mp_vou_remove(mp_obj_t self_in, mp_obj_t attr_key) {
     vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
