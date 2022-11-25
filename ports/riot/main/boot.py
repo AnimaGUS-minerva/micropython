@@ -238,15 +238,16 @@ if 1:  # test `voucher` module
         test_assert_eq('remove - ATTR_CREATED_ON not exist on remove', vch.remove(ATTR_CREATED_ON), False)
         test_assert_eq('remove - False for ATTR_LAST_RENEWAL_DATE', vch.remove(ATTR_LAST_RENEWAL_DATE), False)
 
+        #
+
         ### `.getiter`
-        vch.dump()  # debug
+        vch = voucher.from_cbor(voucher.get_vch_jada()).dump()
         print('!!!! before')
         for kv in vch:
             print('attr - kv:', kv)
         for item in enumerate(vch):
             print('attr - (at, kv):', item)
         print('!!!! after')
-
 
         ### `.subscr`
         ### `.print`
