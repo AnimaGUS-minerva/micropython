@@ -384,16 +384,26 @@ STATIC mp_obj_t vou_iterernext(mp_obj_t self_in) {
     return obj;
 }
 
-mp_obj_t mp_vou_getiter(mp_obj_t obj_in, mp_obj_iter_buf_t *iter_buf) {
+mp_obj_t mp_vou_getiter(mp_obj_t self_in, mp_obj_iter_buf_t *iter_buf) {
     assert(sizeof(mp_obj_vou_iter_t) <= sizeof(mp_obj_iter_buf_t));
 
     mp_obj_vou_iter_t *obj_iter = (mp_obj_vou_iter_t *)iter_buf;
     obj_iter->base.type = &mp_type_polymorph_iter;
     obj_iter->iternext = vou_iterernext;
-    obj_iter->vou = obj_in;
+    obj_iter->vou = self_in;
     obj_iter->cur = 0;
 
     return MP_OBJ_FROM_PTR(obj_iter);
+}
+
+mp_obj_t mp_vou_subscr(mp_obj_t self_in, mp_obj_t attr_key, mp_obj_t attr_val) {
+    if (mp_obj_is_type(attr_key, &mp_type_slice)) {
+        mp_raise_ValueError(MP_ERROR_TEXT("slicing is not supported"));
+    }
+
+    return attr_val == MP_OBJ_SENTINEL ?
+        mp_vou_get(self_in, attr_key) :
+        mp_vou_set(self_in, attr_key, attr_val);
 }
 
 //
