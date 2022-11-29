@@ -35,6 +35,7 @@ mp_obj_t mp_vrq_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, 
 mp_obj_t mp_vch_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args);
 mp_obj_t mp_vou_getiter(mp_obj_t self_in, mp_obj_iter_buf_t *iter_buf);
 mp_obj_t mp_vou_subscr(mp_obj_t self_in, mp_obj_t attr_key, mp_obj_t attr_val);
+void mp_vou_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind);
 
 const mp_obj_type_t voucher_vrq_type = {
     { &mp_type_type },
@@ -42,7 +43,7 @@ const mp_obj_type_t voucher_vrq_type = {
     .make_new = mp_vrq_make_new,
     .getiter = mp_vou_getiter,
     .subscr = mp_vou_subscr,
-    //.print = mp_vou_print,
+    .print = mp_vou_print,
     .locals_dict = (void*)&voucher_locals_dict,
 };
 
@@ -52,7 +53,7 @@ const mp_obj_type_t voucher_vch_type = {
     .make_new = mp_vch_make_new,
     .getiter = mp_vou_getiter,
     .subscr = mp_vou_subscr,
-    //.print = mp_vou_print,
+    .print = mp_vou_print,
     .locals_dict = (void*)&voucher_locals_dict,
 };
 

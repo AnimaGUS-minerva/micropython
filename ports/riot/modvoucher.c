@@ -406,6 +406,32 @@ mp_obj_t mp_vou_subscr(mp_obj_t self_in, mp_obj_t attr_key, mp_obj_t attr_val) {
         mp_vou_set(self_in, attr_key, attr_val);
 }
 
+void mp_vou_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind) {
+    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
+
+    mp_print_str(print, "voucher type: ");
+    mp_print_str(print, vi_provider_is_vrq(ptr) ? "vrq" : "vch");
+
+    size_t len = vi_provider_len(ptr);
+    mp_print_str(print, "\n# of attributes: ");
+    mp_obj_print_helper(print, mp_obj_new_int(len), PRINT_REPR);
+    mp_print_str(print, "\n");
+
+    for (size_t idx = 0; idx < len; idx++) {
+        mp_uint_t key = vi_provider_attr_key_at(ptr, idx);
+
+        // e.g. [ATTR_NONCE=6]: b'abcd12345'
+        mp_print_str(print, "  [");
+        mp_print_str(print, "ATTR_XX"); // !!!! key -> str
+        mp_print_str(print, "=");
+        mp_obj_print_helper(print, mp_obj_new_int_from_uint(key), PRINT_REPR);
+        mp_print_str(print, "]: ");
+        mp_obj_print_helper(print, vou_get_inner(ptr, key), PRINT_REPR);
+
+        if (idx < len - 1) mp_print_str(print, "\n");
+    }
+}
+
 //
 
 STATIC mp_obj_t mp_vou_remove(mp_obj_t self_in, mp_obj_t attr_key) {

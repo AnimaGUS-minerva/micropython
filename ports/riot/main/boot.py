@@ -297,8 +297,17 @@ if 1:  # test `voucher` module
         test_assert_eq('.subscr-based slicing is N/A', ret, None)
 
         ### `.print` _print
+        print(vch)
+        print(vrq)
 
         ### set_signer_cert stuff, getter for CoseSig fields
+        # test_assert('vch_jada.validate() - without PEM, `signer_cert` is used instead',
+        #     voucher.from_cbor(voucher.get_vch_jada()).validate())
+        # test_assert('vch_f2.validate() - without PEM, should fail',
+        #     not voucher.from_cbor(voucher.get_vch_F2_00_02()).validate())
+
+
+
         ### refactor with 'modvoucher_debug.c'
 
         #
