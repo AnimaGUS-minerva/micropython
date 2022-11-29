@@ -420,12 +420,11 @@ void mp_vou_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kin
     for (size_t idx = 0; idx < len; idx++) {
         mp_uint_t key = vi_provider_attr_key_at(ptr, idx);
 
-        // e.g. [ATTR_NONCE=6]: b'abcd12345'
         mp_print_str(print, "  [");
-        mp_print_str(print, "ATTR_XX"); // !!!! key -> str
+        mp_print_str(print, attr_key_to_str(key));
         mp_print_str(print, "=");
         mp_obj_print_helper(print, mp_obj_new_int_from_uint(key), PRINT_REPR);
-        mp_print_str(print, "]: ");
+        mp_print_str(print, "] ");
         mp_obj_print_helper(print, vou_get_inner(ptr, key), PRINT_REPR);
 
         if (idx < len - 1) mp_print_str(print, "\n");
