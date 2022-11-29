@@ -410,7 +410,7 @@ void mp_vou_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kin
     vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
 
     mp_print_str(print, "voucher type: ");
-    mp_print_str(print, vi_provider_is_vrq(ptr) ? "vrq" : "vch");
+    mp_print_str(print, vi_provider_is_vrq(ptr) ? "'vrq'" : "'vch'");
 
     size_t len = vi_provider_len(ptr);
     mp_print_str(print, "\n# of attributes: ");
