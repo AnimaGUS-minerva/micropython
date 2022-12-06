@@ -484,6 +484,20 @@ STATIC mp_obj_t mp_vou_get_signer_cert(mp_obj_t self_in) {
 }
 MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_get_signer_cert_obj, mp_vou_get_signer_cert);
 
+STATIC mp_obj_t mp_vou_set_signer_cert(mp_obj_t self_in, mp_obj_t cert) {
+    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
+
+    if (mp_obj_is_type(cert, &mp_type_bytes)) {
+        GET_STR_DATA_LEN(cert, str_data, str_len);
+        vi_provider_set_signer_cert(ptr, str_data, str_len);
+    } else {
+        mp_raise_ValueError(MP_ERROR_TEXT("'cert' type must be bytes"));
+    }
+
+    return self_in;
+}
+MP_DEFINE_CONST_FUN_OBJ_2(mp_vou_set_signer_cert_obj, mp_vou_set_signer_cert);
+
 //
 
 STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {

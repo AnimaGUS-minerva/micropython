@@ -300,28 +300,27 @@ if 1:  # test `voucher` module
         print(vch)
         print(vrq)
 
-        ### flow
-        # pub fn get_signer_cert(&self) -> Option<(&[u8], &SignatureAlgorithm)> {
-        # pub fn set_signer_cert(&mut self) ->
-        # ^^^-- [ ] `{get,set}_signer_cert()`
+        ### `{get,set}_signer_cert()`
         v = from_cbor(get_vch_jada())
-        test_assert('voucher with signer_cert, should succeed', v.validate())
+        test_assert('validate voucher with signer_cert, should succeed', v.validate())
 
         cert_orig = v.get_signer_cert()
-        test_assert_eq('', cert_orig, bytes([4, 186, 197, 177, 28, 173, 143, 153, 249, 199, 43, 5, 207, 75, 158, 38, 210
+        test_assert_eq('get_signer_cert - cert_orig', cert_orig, bytes([4, 186, 197, 177, 28, 173, 143, 153, 249, 199, 43, 5, 207, 75, 158, 38, 210
 , 68, 220, 24, 159, 116, 82, 40, 37, 90, 33, 154, 134, 214, 160, 158, 255, 32, 19, 139, 248, 45, 193, 182
 , 213, 98, 190, 15, 165, 74, 183, 128, 74, 58, 100, 182, 215, 44, 207, 237, 107, 111, 182, 237, 40, 187,
 252, 17, 126]))
 
-        # test_assert_eq('', v.set_signer_cert(), b'123')
-        # test_assert('', not v.validate())
-        #
-        # v.set_signer_cert(cert_orig)
-        # test_assert('', v.validate())
+        v.set_signer_cert(b'123')
+        test_assert_eq('set_signer_cert - invalid cert', v.get_signer_cert(), b'123')
+        test_assert('set_signer_cert - validate with invalid cert, should fail', not v.validate())
+
+        v.set_signer_cert(cert_orig)
+        test_assert_eq('set_signer_cert - cert_orig', v.get_signer_cert(), cert_orig)
+        test_assert('set_signer_cert - validate with cert_orig', v.validate())
 
         v = from_cbor(get_vch_F2_00_02())
-        test_assert('voucher without signer_cert, should fail', not v.validate())
-        test_assert_eq('', v.get_signer_cert(), None)
+        test_assert('validate voucher without signer_cert, should fail', not v.validate())
+        test_assert_eq('get_signer_cert - expect None', v.get_signer_cert(), None)
 
         ### flow
         # pub fn to_validate(&self) -> (Option<&[u8]>, Option<(&[u8], &SignatureAlgorithm)>, &[u8]) {
