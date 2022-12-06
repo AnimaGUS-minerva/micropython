@@ -422,8 +422,10 @@ void mp_vou_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kin
 
         mp_print_str(print, "  [");
         mp_print_str(print, attr_key_to_str(key));
+        /*
         mp_print_str(print, "=");
         mp_obj_print_helper(print, mp_obj_new_int_from_uint(key), PRINT_REPR);
+         */
         mp_print_str(print, "] ");
         mp_obj_print_helper(print, vou_get_inner(ptr, key), PRINT_REPR);
 
