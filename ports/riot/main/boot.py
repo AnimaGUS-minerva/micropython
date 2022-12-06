@@ -300,12 +300,31 @@ if 1:  # test `voucher` module
         print(vch)
         print(vrq)
 
-        ### set_signer_cert stuff, getter for CoseSig fields
-        # test_assert('vch_jada.validate() - without PEM, `signer_cert` is used instead',
-        #     voucher.from_cbor(voucher.get_vch_jada()).validate())
-        # test_assert('vch_f2.validate() - without PEM, should fail',
-        #     not voucher.from_cbor(voucher.get_vch_F2_00_02()).validate())
+        ### flow
+        # pub fn get_signer_cert(&self) -> Option<(&[u8], &SignatureAlgorithm)> {
+        # pub fn set_signer_cert(&mut self) ->
+        # ^^^-- [ ] `{get,set}_signer_cert()`
+        v = from_cbor(get_vch_jada())
+        test_assert('voucher with signer_cert, should succeed', v.validate())
 
+        # cert_orig = v.get_signer_cert()
+        # test_assert_eq('', cert_orig, xx)
+        #
+        # test_assert_eq('', v.set_signer_cert(), b'123')
+        # test_assert('', not v.validate())
+        #
+        # v.set_signer_cert(cert_orig)
+        # test_assert('', v.validate())
+
+        v = from_cbor(get_vch_F2_00_02())
+        test_assert('voucher without signer_cert, should fail', not v.validate())
+        # test_assert_eq('', v.get_signer_cert(), None)
+
+        ### flow
+        # pub fn to_validate(&self) -> (Option<&[u8]>, Option<(&[u8], &SignatureAlgorithm)>, &[u8]) {
+        #     (self.get_signer_cert(), self.get_signature(), &self.cd.sig().to_verify)
+        # }
+        # ^^^-- [ ] debug methods: `get_signature()`, `get_content()`
 
 
         ### refactor with 'modvoucher_debug.c'
