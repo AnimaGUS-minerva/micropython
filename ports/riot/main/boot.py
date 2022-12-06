@@ -307,9 +307,12 @@ if 1:  # test `voucher` module
         v = from_cbor(get_vch_jada())
         test_assert('voucher with signer_cert, should succeed', v.validate())
 
-        # cert_orig = v.get_signer_cert()
-        # test_assert_eq('', cert_orig, xx)
-        #
+        cert_orig = v.get_signer_cert()
+        test_assert_eq('', cert_orig, bytes([4, 186, 197, 177, 28, 173, 143, 153, 249, 199, 43, 5, 207, 75, 158, 38, 210
+, 68, 220, 24, 159, 116, 82, 40, 37, 90, 33, 154, 134, 214, 160, 158, 255, 32, 19, 139, 248, 45, 193, 182
+, 213, 98, 190, 15, 165, 74, 183, 128, 74, 58, 100, 182, 215, 44, 207, 237, 107, 111, 182, 237, 40, 187,
+252, 17, 126]))
+
         # test_assert_eq('', v.set_signer_cert(), b'123')
         # test_assert('', not v.validate())
         #
@@ -318,7 +321,7 @@ if 1:  # test `voucher` module
 
         v = from_cbor(get_vch_F2_00_02())
         test_assert('voucher without signer_cert, should fail', not v.validate())
-        # test_assert_eq('', v.get_signer_cert(), None)
+        test_assert_eq('', v.get_signer_cert(), None)
 
         ### flow
         # pub fn to_validate(&self) -> (Option<&[u8]>, Option<(&[u8], &SignatureAlgorithm)>, &[u8]) {

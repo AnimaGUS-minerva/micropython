@@ -427,6 +427,8 @@ void mp_vou_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kin
 
         if (idx < len - 1) mp_print_str(print, "\n");
     }
+
+    // TODO !!!! add COSE related info
 }
 
 //
@@ -471,6 +473,16 @@ STATIC mp_obj_t mp_vou_validate(size_t n_args, const mp_obj_t *args) {
     return mp_obj_new_bool(result);
 }
 MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mp_vou_validate_obj, 1, 2, mp_vou_validate);
+
+//
+
+STATIC mp_obj_t mp_vou_get_signer_cert(mp_obj_t self_in) {
+    uint8_t *ptr_heap;
+    size_t sz_heap = vi_provider_get_signer_cert(MP_OBJ_TO_PROVIDER_PTR(self_in), &ptr_heap);
+
+    return into_obj_bytes(&ptr_heap, sz_heap);
+}
+MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_get_signer_cert_obj, mp_vou_get_signer_cert);
 
 //
 

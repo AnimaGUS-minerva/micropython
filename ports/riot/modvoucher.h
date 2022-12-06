@@ -14,6 +14,7 @@ MP_DECLARE_CONST_FUN_OBJ_2(mp_vou_get_obj);
 MP_DECLARE_CONST_FUN_OBJ_2(mp_vou_remove_obj);
 MP_DECLARE_CONST_FUN_OBJ_3(mp_vou_sign_obj);
 MP_DECLARE_CONST_FUN_OBJ_VAR_BETWEEN(mp_vou_validate_obj);
+MP_DECLARE_CONST_FUN_OBJ_1(mp_vou_get_signer_cert_obj);
 
 const mp_rom_map_elem_t voucher_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR___del__), MP_ROM_PTR(&mp_vou_del_obj) },
@@ -25,6 +26,7 @@ const mp_rom_map_elem_t voucher_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_remove), MP_ROM_PTR(&mp_vou_remove_obj) },
     { MP_ROM_QSTR(MP_QSTR_sign), MP_ROM_PTR(&mp_vou_sign_obj) },
     { MP_ROM_QSTR(MP_QSTR_validate), MP_ROM_PTR(&mp_vou_validate_obj) },
+    { MP_ROM_QSTR(MP_QSTR_get_signer_cert), MP_ROM_PTR(&mp_vou_get_signer_cert_obj) },
 };
 
 MP_DEFINE_CONST_DICT(voucher_locals_dict, voucher_locals_dict_table);
