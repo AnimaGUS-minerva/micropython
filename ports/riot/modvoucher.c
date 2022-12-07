@@ -506,6 +506,21 @@ STATIC mp_obj_t mp_vou_get_content(mp_obj_t self_in) {
 }
 MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_get_content_obj, mp_vou_get_content);
 
+STATIC mp_obj_t mp_vou_get_signature(mp_obj_t self_in) {
+    uint8_t *ptr_heap;
+    size_t sz_heap = vi_provider_get_signature_bytes(MP_OBJ_TO_PROVIDER_PTR(self_in), &ptr_heap);
+
+    return into_obj_bytes(&ptr_heap, sz_heap);
+}
+MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_get_signature_obj, mp_vou_get_signature);
+
+STATIC mp_obj_t mp_vou_get_signature_alg(mp_obj_t self_in) {
+    uint8_t alg = vi_provider_get_signature_alg(MP_OBJ_TO_PROVIDER_PTR(self_in));
+
+    return mp_obj_new_int_from_uint(alg);
+}
+MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_get_signature_alg_obj, mp_vou_get_signature_alg);
+
 //
 
 STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {
