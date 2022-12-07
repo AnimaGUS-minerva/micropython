@@ -406,31 +406,6 @@ mp_obj_t mp_vou_subscr(mp_obj_t self_in, mp_obj_t attr_key, mp_obj_t attr_val) {
         mp_vou_set(self_in, attr_key, attr_val);
 }
 
-void mp_vou_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind) {
-    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
-
-    mp_print_str(print, "voucher type: ");
-    mp_print_str(print, vi_provider_is_vrq(ptr) ? "'vrq'" : "'vch'");
-
-    size_t len = vi_provider_len(ptr);
-    mp_print_str(print, "\n# of attributes: ");
-    mp_obj_print_helper(print, mp_obj_new_int(len), PRINT_REPR);
-    mp_print_str(print, "\n");
-
-    for (size_t idx = 0; idx < len; idx++) {
-        mp_uint_t key = vi_provider_attr_key_at(ptr, idx);
-
-        mp_print_str(print, "  [");
-        mp_print_str(print, attr_key_to_str(key));
-        mp_print_str(print, "] ");
-        mp_obj_print_helper(print, vou_get_inner(ptr, key), PRINT_REPR);
-
-        if (idx < len - 1) mp_print_str(print, "\n");
-    }
-
-    // TODO !!!!++ add COSE related info
-}
-
 //
 
 STATIC mp_obj_t mp_vou_remove(mp_obj_t self_in, mp_obj_t attr_key) {
@@ -514,12 +489,51 @@ STATIC mp_obj_t mp_vou_get_signature(mp_obj_t self_in) {
 }
 MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_get_signature_obj, mp_vou_get_signature);
 
-STATIC mp_obj_t mp_vou_get_signature_alg(mp_obj_t self_in) {
-    uint8_t alg = vi_provider_get_signature_alg(MP_OBJ_TO_PROVIDER_PTR(self_in));
+STATIC int8_t get_signature_alg(vi_provider_t *ptr) {
+    return vi_provider_get_signature_alg(ptr);
+}
 
-    return mp_obj_new_int_from_uint(alg);
+STATIC mp_obj_t mp_vou_get_signature_alg(mp_obj_t self_in) {
+    int8_t alg = get_signature_alg(MP_OBJ_TO_PROVIDER_PTR(self_in));
+
+    return alg >= 0 ? mp_obj_new_int(alg) : mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_get_signature_alg_obj, mp_vou_get_signature_alg);
+
+//
+
+void mp_vou_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind) {
+    vi_provider_t *ptr = MP_OBJ_TO_PROVIDER_PTR(self_in);
+
+    mp_print_str(print, "voucher type: ");
+    mp_print_str(print, vi_provider_is_vrq(ptr) ? "'vrq'" : "'vch'");
+
+    size_t len = vi_provider_len(ptr);
+    mp_print_str(print, "\n# of attributes: ");
+    mp_obj_print_helper(print, mp_obj_new_int(len), PRINT_REPR);
+    mp_print_str(print, "\n");
+
+    for (size_t idx = 0; idx < len; idx++) {
+        mp_uint_t key = vi_provider_attr_key_at(ptr, idx);
+
+        mp_print_str(print, "  [");
+        mp_print_str(print, attr_key_to_str(key));
+        mp_print_str(print, "] ");
+        mp_obj_print_helper(print, vou_get_inner(ptr, key), PRINT_REPR);
+
+        if (idx < len - 1) mp_print_str(print, "\n");
+    }
+
+    mp_print_str(print, "\nCOSE signature: ");
+    mp_obj_print_helper(print, mp_vou_get_signature(self_in), PRINT_REPR);
+
+    mp_print_str(print, "\nCOSE signature algorithm: ");
+    int8_t alg = get_signature_alg(ptr);
+    mp_print_str(print, alg >= 0 ? signature_alg_to_str(alg) : "None");
+
+    mp_print_str(print, "\nCOSE content: ");
+    mp_obj_print_helper(print, mp_vou_get_content(self_in), PRINT_REPR);
+}
 
 //
 
