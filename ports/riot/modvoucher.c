@@ -489,12 +489,12 @@ STATIC mp_obj_t mp_vou_get_signature(mp_obj_t self_in) {
 }
 MP_DEFINE_CONST_FUN_OBJ_1(mp_vou_get_signature_obj, mp_vou_get_signature);
 
-STATIC int8_t get_signature_alg(vi_provider_t *ptr) {
+STATIC int8_t vou_get_signature_alg(vi_provider_t *ptr) {
     return vi_provider_get_signature_alg(ptr);
 }
 
 STATIC mp_obj_t mp_vou_get_signature_alg(mp_obj_t self_in) {
-    int8_t alg = get_signature_alg(MP_OBJ_TO_PROVIDER_PTR(self_in));
+    int8_t alg = vou_get_signature_alg(MP_OBJ_TO_PROVIDER_PTR(self_in));
 
     return alg >= 0 ? mp_obj_new_int(alg) : mp_const_none;
 }
@@ -519,17 +519,22 @@ void mp_vou_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kin
         mp_print_str(print, "  [");
         mp_print_str(print, attr_key_to_str(key));
         mp_print_str(print, "] ");
-        mp_obj_print_helper(print, vou_get_inner(ptr, key), PRINT_REPR);
+        if (key == ATTR_ASSERTION) {
+            mp_print_str(print,
+                attr_assertion_to_str(vi_provider_get_attr_int_or_panic(ptr, key)));
+        } else {
+            mp_obj_print_helper(print, vou_get_inner(ptr, key), PRINT_REPR);
+        }
 
         if (idx < len - 1) mp_print_str(print, "\n");
     }
 
+    mp_print_str(print, "\nCOSE signature algorithm: ");
+    int8_t alg = vou_get_signature_alg(ptr);
+    mp_print_str(print, alg >= 0 ? signature_alg_to_str(alg) : "None");
+
     mp_print_str(print, "\nCOSE signature: ");
     mp_obj_print_helper(print, mp_vou_get_signature(self_in), PRINT_REPR);
-
-    mp_print_str(print, "\nCOSE signature algorithm: ");
-    int8_t alg = get_signature_alg(ptr);
-    mp_print_str(print, alg >= 0 ? signature_alg_to_str(alg) : "None");
 
     mp_print_str(print, "\nCOSE content: ");
     mp_obj_print_helper(print, mp_vou_get_content(self_in), PRINT_REPR);
