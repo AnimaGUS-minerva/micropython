@@ -135,6 +135,7 @@ extern const struct _mp_obj_module_t mp_module_usocket;
 extern const struct _mp_obj_module_t mp_module_riot;
 #ifdef CUSTOM_BOARD
 extern const struct _mp_obj_module_t mp_module_voucher;
+extern const struct _mp_obj_module_t mp_module_voucher_debug;
 #endif
 extern const struct _mp_obj_module_t mp_module_xtimer;
 
@@ -165,8 +166,11 @@ extern const struct _mp_obj_module_t mp_module_xtimer;
 #if MICROPY_PY_VOUCHER
 #define MICROPY_PY_VOUCHER_DEF \
         { MP_ROM_QSTR(MP_QSTR_voucher), MP_ROM_PTR(&mp_module_voucher) },
+#define MICROPY_PY_VOUCHER_DEBUG_DEF \
+        { MP_ROM_QSTR(MP_QSTR_voucher_debug), MP_ROM_PTR(&mp_module_voucher_debug) },
 #else
 #define MICROPY_PY_VOUCHER_DEF
+#define MICROPY_PY_VOUCHER_DEBUG_DEF
 #endif
 
 #if MICROPY_PY_XTIMER
@@ -182,6 +186,7 @@ extern const struct _mp_obj_module_t mp_module_xtimer;
     MICROPY_PY_UTIME_DEF \
     MICROPY_PY_RIOT_DEF \
     MICROPY_PY_VOUCHER_DEF \
+    MICROPY_PY_VOUCHER_DEBUG_DEF \
     MICROPY_PY_XTIMER_DEF
 
 #define MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS \

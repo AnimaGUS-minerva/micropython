@@ -5,8 +5,11 @@ import gc
 #print('dir(voucher):', dir(voucher))
 help(voucher)
 
-print('voucher.demo():', voucher.demo())
-
+import voucher_debug
+help(voucher_debug)
+from voucher_debug import *  # for `vd_*()` methods
+print('vd_demo():', vd_demo())
+return  # !!!!
 
 def test_assert_eq(title, left, right, diag=True):
     result = left == right
@@ -24,7 +27,7 @@ if 1:  # test misc.
     test_assert_eq('list from bytes', list(b'\x11\x22\x33'), [17, 34, 51])
 
 if 1:  # test `voucher` module
-    tpl = voucher.test_ffi()
+    tpl = vd_test_ffi()
     test_assert_eq('voucher.test_ffi',
         tpl, (42, False, None, True, False, b'\xa0\xb1\xc2\xd3\xe4\xf5', False))
     # print(tpl)

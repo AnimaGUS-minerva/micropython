@@ -570,8 +570,6 @@ STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_SA_ES512), MP_ROM_INT(SA_ES512) },
     { MP_ROM_QSTR(MP_QSTR_SA_PS256), MP_ROM_INT(SA_PS256) },
     //---- debug/test stuff
-    { MP_ROM_QSTR(MP_QSTR_demo), MP_ROM_PTR(&debug_demo_obj) },
-    { MP_ROM_QSTR(MP_QSTR_test_ffi), MP_ROM_PTR(&debug_test_ffi_obj) },
     { MP_ROM_QSTR(MP_QSTR_init_psa_crypto), MP_ROM_PTR(&debug_init_psa_crypto_obj) },
     { MP_ROM_QSTR(MP_QSTR_get_vch_jada), MP_ROM_PTR(&debug_get_vch_jada_obj) },
     { MP_ROM_QSTR(MP_QSTR_get_vch_F2_00_02), MP_ROM_PTR(&debug_get_vch_F2_00_02_obj) },
@@ -590,6 +588,21 @@ STATIC MP_DEFINE_CONST_DICT(mp_module_voucher_globals, mp_module_voucher_globals
 const mp_obj_module_t mp_module_voucher = {
     .base = { &mp_type_module },
     .globals = (mp_obj_dict_t*)&mp_module_voucher_globals,
+};
+
+//
+
+STATIC const mp_rom_map_elem_t mp_module_voucher_debug_globals_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_voucher_debug) },
+    { MP_ROM_QSTR(MP_QSTR_vd_demo), MP_ROM_PTR(&debug_demo_obj) },
+    { MP_ROM_QSTR(MP_QSTR_vd_test_ffi), MP_ROM_PTR(&debug_test_ffi_obj) },
+};
+
+STATIC MP_DEFINE_CONST_DICT(mp_module_voucher_debug_globals, mp_module_voucher_debug_globals_table);
+
+const mp_obj_module_t mp_module_voucher_debug = {
+    .base = { &mp_type_module },
+    .globals = (mp_obj_dict_t*)&mp_module_voucher_debug_globals,
 };
 
 #endif // MICROPY_PY_VOUCHER
