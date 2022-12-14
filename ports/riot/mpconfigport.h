@@ -98,6 +98,9 @@
 #define MICROPY_PY_RIOT                 (1)
 #ifdef CUSTOM_BOARD
 #define MICROPY_PY_VOUCHER              (1)
+  #if VOUCHER_DEBUG
+  #define MICROPY_PY_VOUCHER_DEBUG      (1)
+  #endif
 #endif
 #define MICROPY_PY_XTIMER               (1)
 #define MICROPY_PY_SYS_MODULES          (1)
@@ -166,10 +169,13 @@ extern const struct _mp_obj_module_t mp_module_xtimer;
 #if MICROPY_PY_VOUCHER
 #define MICROPY_PY_VOUCHER_DEF \
         { MP_ROM_QSTR(MP_QSTR_voucher), MP_ROM_PTR(&mp_module_voucher) },
+#else
+#define MICROPY_PY_VOUCHER_DEF
+#endif
+#if MICROPY_PY_VOUCHER_DEBUG
 #define MICROPY_PY_VOUCHER_DEBUG_DEF \
         { MP_ROM_QSTR(MP_QSTR_voucher_debug), MP_ROM_PTR(&mp_module_voucher_debug) },
 #else
-#define MICROPY_PY_VOUCHER_DEF
 #define MICROPY_PY_VOUCHER_DEBUG_DEF
 #endif
 

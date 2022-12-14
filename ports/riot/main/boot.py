@@ -1,5 +1,5 @@
 import voucher
-from voucher import *  # for `{ATTR,SA}_*`
+from voucher import *  # for `{ATTR,SA}_*` constants
 import gc
 
 #print('dir(voucher):', dir(voucher))

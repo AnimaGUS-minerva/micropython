@@ -16,6 +16,11 @@ USEMODULE += micropython
 EXTERNAL_MODULE_DIRS += $(MP_BASE)/ports/riot/modules
 
 #---- @@
+VOUCHER_DEBUG ?= 1
+ifeq ($(VOUCHER_DEBUG),1)
+    CFLAGS += -DVOUCHER_DEBUG
+endif
+
 CUSTOM_BOARD ?= native
 
 ifeq ($(CUSTOM_BOARD),esp32)
