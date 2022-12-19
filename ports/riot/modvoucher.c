@@ -463,8 +463,17 @@ STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_SA_PS256), MP_ROM_INT(SA_PS256) },
 #if MICROPY_PY_VOUCHER_DEBUG
     { MP_ROM_QSTR(MP_QSTR_debug_demo), MP_ROM_PTR(&debug_demo_obj) },
-    // ...
-    // ...
+    { MP_ROM_QSTR(MP_QSTR_debug_test_ffi), MP_ROM_PTR(&debug_test_ffi_obj) },
+    { MP_ROM_QSTR(MP_QSTR_debug_get_vch_jada), MP_ROM_PTR(&debug_get_vch_jada_obj) },
+    { MP_ROM_QSTR(MP_QSTR_debug_get_vch_F2_00_02), MP_ROM_PTR(&debug_get_vch_F2_00_02_obj) },
+    { MP_ROM_QSTR(MP_QSTR_debug_get_masa_pem_F2_00_02), MP_ROM_PTR(&debug_get_masa_pem_F2_00_02_obj) },
+    { MP_ROM_QSTR(MP_QSTR_debug_get_key_pem_F2_00_02), MP_ROM_PTR(&debug_get_key_pem_F2_00_02_obj) },
+    { MP_ROM_QSTR(MP_QSTR_debug_get_device_crt_F2_00_02), MP_ROM_PTR(&debug_get_device_crt_F2_00_02_obj) },
+    { MP_ROM_QSTR(MP_QSTR_debug_get_vrq_F2_00_02), MP_ROM_PTR(&debug_get_vrq_F2_00_02_obj) },
+    { MP_ROM_QSTR(MP_QSTR_debug_create_vrq_F2_00_02), MP_ROM_PTR(&debug_create_vrq_F2_00_02_obj) },
+    { MP_ROM_QSTR(MP_QSTR_debug_parse), MP_ROM_PTR(&debug_parse_obj) },
+    { MP_ROM_QSTR(MP_QSTR_debug_validate), MP_ROM_PTR(&debug_validate_obj) },
+    { MP_ROM_QSTR(MP_QSTR_debug_sign), MP_ROM_PTR(&debug_sign_obj) },
 #endif
 };
 

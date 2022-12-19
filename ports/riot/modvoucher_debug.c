@@ -13,15 +13,16 @@
 //    return mp_const_none;
 //}
 //STATIC MP_DEFINE_CONST_FUN_OBJ_0(vd_demo_obj, vd_demo);
+//========
 STATIC mp_obj_t demo(void) {
-    printf("[modvoucher.c] demo(): ^^\n");
+    printf("[voucher_debug.c] demo(): ^^\n");
 
     return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_0(debug_demo_obj, demo);
 
-STATIC mp_obj_t vd_test_ffi(void) {
-    printf("vd_test_ffi(): ^^\n");
+STATIC mp_obj_t test_ffi(void) {
+    printf("[voucher_debug.c] test_ffi(): ^^\n");
 
     { // basic stuff
         int input = 4;
@@ -48,63 +49,63 @@ STATIC mp_obj_t vd_test_ffi(void) {
 
     return mp_obj_new_tuple(SZ, tuple);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(vd_test_ffi_obj, vd_test_ffi);
+MP_DEFINE_CONST_FUN_OBJ_0(debug_test_ffi_obj, test_ffi);
 
-STATIC mp_obj_t vd_get_vch_jada(void) {
+STATIC mp_obj_t get_vch_jada(void) {
     uint8_t *ptr_static;
     size_t sz;
 
     sz = vi_get_voucher_jada(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(vd_get_vch_jada_obj, vd_get_vch_jada);
+MP_DEFINE_CONST_FUN_OBJ_0(debug_get_vch_jada_obj, get_vch_jada);
 
-STATIC mp_obj_t vd_get_vch_F2_00_02(void) {
+STATIC mp_obj_t get_vch_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
     sz = vi_get_voucher_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(vd_get_vch_F2_00_02_obj, vd_get_vch_F2_00_02);
+MP_DEFINE_CONST_FUN_OBJ_0(debug_get_vch_F2_00_02_obj, get_vch_F2_00_02);
 
-STATIC mp_obj_t vd_get_masa_pem_F2_00_02(void) {
+STATIC mp_obj_t get_masa_pem_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
     sz = vi_get_masa_pem_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(vd_get_masa_pem_F2_00_02_obj, vd_get_masa_pem_F2_00_02);
+MP_DEFINE_CONST_FUN_OBJ_0(debug_get_masa_pem_F2_00_02_obj, get_masa_pem_F2_00_02);
 
-STATIC mp_obj_t vd_get_key_pem_F2_00_02(void) {
+STATIC mp_obj_t get_key_pem_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
     sz = vi_get_key_pem_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(vd_get_key_pem_F2_00_02_obj, vd_get_key_pem_F2_00_02);
+MP_DEFINE_CONST_FUN_OBJ_0(debug_get_key_pem_F2_00_02_obj, get_key_pem_F2_00_02);
 
-STATIC mp_obj_t vd_get_device_crt_F2_00_02(void) {
+STATIC mp_obj_t get_device_crt_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
     sz = vi_get_device_crt_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(vd_get_device_crt_F2_00_02_obj, vd_get_device_crt_F2_00_02);
+MP_DEFINE_CONST_FUN_OBJ_0(debug_get_device_crt_F2_00_02_obj, get_device_crt_F2_00_02);
 
-STATIC mp_obj_t vd_get_vrq_F2_00_02(void) {
+STATIC mp_obj_t get_vrq_F2_00_02(void) {
     uint8_t *ptr_static;
     size_t sz;
 
     sz = vi_get_vrq_F2_00_02(&ptr_static);
     return mp_obj_new_bytes(ptr_static, sz);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(vd_get_vrq_F2_00_02_obj, vd_get_vrq_F2_00_02);
+MP_DEFINE_CONST_FUN_OBJ_0(debug_get_vrq_F2_00_02_obj, get_vrq_F2_00_02);
 
-STATIC mp_obj_t vd_create_vrq_F2_00_02(void) {
+STATIC mp_obj_t create_vrq_F2_00_02(void) {
     uint8_t *ptr_heap;
     size_t sz_heap;
     mp_obj_t obj;
@@ -115,9 +116,9 @@ STATIC mp_obj_t vd_create_vrq_F2_00_02(void) {
 
     return obj;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(vd_create_vrq_F2_00_02_obj, vd_create_vrq_F2_00_02);
+MP_DEFINE_CONST_FUN_OBJ_0(debug_create_vrq_F2_00_02_obj, create_vrq_F2_00_02);
 
-STATIC mp_obj_t vd_sign(mp_obj_t bs_vch, mp_obj_t bs_key, mp_obj_t alg) {
+STATIC mp_obj_t sign(mp_obj_t bs_vch, mp_obj_t bs_key, mp_obj_t alg) {
     if (mp_obj_is_type(bs_vch, &mp_type_bytes) &&
         mp_obj_is_type(bs_key, &mp_type_bytes)) {
         uint8_t *ptr_raw, *ptr_key, *ptr_heap;
@@ -145,9 +146,9 @@ STATIC mp_obj_t vd_sign(mp_obj_t bs_vch, mp_obj_t bs_key, mp_obj_t alg) {
         mp_raise_ValueError(MP_ERROR_TEXT("both 'voucher' and 'key' args must be <class 'bytes'>"));
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(vd_sign_obj, vd_sign);
+MP_DEFINE_CONST_FUN_OBJ_3(debug_sign_obj, sign);
 
-STATIC mp_obj_t vd_dump(mp_obj_t self_in) {
+STATIC mp_obj_t parse(mp_obj_t self_in) {
     if (mp_obj_is_type(self_in, &mp_type_bytes)) {
         GET_STR_DATA_LEN(self_in, str_data, str_len);
         vi_dump(str_data, str_len);
@@ -156,10 +157,10 @@ STATIC mp_obj_t vd_dump(mp_obj_t self_in) {
         mp_raise_ValueError(MP_ERROR_TEXT("'voucher' arg must be <class 'bytes'>"));
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(vd_dump_obj, vd_dump);
+MP_DEFINE_CONST_FUN_OBJ_1(debug_parse_obj, parse);
 
-STATIC mp_obj_t vd_validate(size_t n_args, const mp_obj_t *args) {
-    // printf("vd_validate(): n_args: %d\n", n_args);
+STATIC mp_obj_t validate(size_t n_args, const mp_obj_t *args) {
+    // printf("[voucher_debug.c] validate(): n_args: %d\n", n_args);
 
     if (n_args == 1) {
         if (mp_obj_is_type(args[0], &mp_type_bytes)) {
@@ -192,11 +193,13 @@ STATIC mp_obj_t vd_validate(size_t n_args, const mp_obj_t *args) {
         }
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(vd_validate_obj, 1, 2, vd_validate);
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(debug_validate_obj, 1, 2, validate);
 
+// !!!!!!!!!! to remove
 STATIC const mp_rom_map_elem_t mp_module_voucher_debug_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_voucher_debug) },
-    //{ MP_ROM_QSTR(MP_QSTR_vd_demo), MP_ROM_PTR(&vd_demo_obj) },
+    /* !!!!!!!!!! to remove
+    { MP_ROM_QSTR(MP_QSTR_vd_demo), MP_ROM_PTR(&vd_demo_obj) },
     { MP_ROM_QSTR(MP_QSTR_vd_test_ffi), MP_ROM_PTR(&vd_test_ffi_obj) },
     { MP_ROM_QSTR(MP_QSTR_vd_get_vch_jada), MP_ROM_PTR(&vd_get_vch_jada_obj) },
     { MP_ROM_QSTR(MP_QSTR_vd_get_vch_F2_00_02), MP_ROM_PTR(&vd_get_vch_F2_00_02_obj) },
@@ -205,13 +208,12 @@ STATIC const mp_rom_map_elem_t mp_module_voucher_debug_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_vd_get_device_crt_F2_00_02), MP_ROM_PTR(&vd_get_device_crt_F2_00_02_obj) },
     { MP_ROM_QSTR(MP_QSTR_vd_get_vrq_F2_00_02), MP_ROM_PTR(&vd_get_vrq_F2_00_02_obj) },
     { MP_ROM_QSTR(MP_QSTR_vd_create_vrq_F2_00_02), MP_ROM_PTR(&vd_create_vrq_F2_00_02_obj) },
-    { MP_ROM_QSTR(MP_QSTR_vd_dump), MP_ROM_PTR(&vd_dump_obj) },
+    { MP_ROM_QSTR(MP_QSTR_vd_parse), MP_ROM_PTR(&vd_parse_obj) },
     { MP_ROM_QSTR(MP_QSTR_vd_validate), MP_ROM_PTR(&vd_validate_obj) },
     { MP_ROM_QSTR(MP_QSTR_vd_sign), MP_ROM_PTR(&vd_sign_obj) },
+     */
 };
-
 STATIC MP_DEFINE_CONST_DICT(mp_module_voucher_debug_globals, mp_module_voucher_debug_globals_table);
-
 const mp_obj_module_t mp_module_voucher_debug = {
     .base = { &mp_type_module },
     .globals = (mp_obj_dict_t*)&mp_module_voucher_debug_globals,
