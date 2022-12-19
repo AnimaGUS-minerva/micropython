@@ -1,7 +1,6 @@
 #include "py/mpconfig.h"
 #include "py/objstr.h"
 #include "py/runtime.h"
-
 #include "stdio.h"
 #include "string.h"
 #include "modvoucher.h"
@@ -394,7 +393,6 @@ STATIC void mp_vou_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kin
 const mp_rom_map_elem_t voucher_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR___del__), MP_ROM_PTR(&mp_vou_del_obj) },
     { MP_ROM_QSTR(MP_QSTR_to_cbor), MP_ROM_PTR(&mp_vou_to_cbor_obj) },
-    { MP_ROM_QSTR(MP_QSTR_dump), MP_ROM_PTR(&mp_vou_dump_obj) },
     { MP_ROM_QSTR(MP_QSTR_len), MP_ROM_PTR(&mp_vou_len_obj) },
     { MP_ROM_QSTR(MP_QSTR_set), MP_ROM_PTR(&mp_vou_set_obj) },
     { MP_ROM_QSTR(MP_QSTR_get), MP_ROM_PTR(&mp_vou_get_obj) },
@@ -406,6 +404,9 @@ const mp_rom_map_elem_t voucher_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_get_content), MP_ROM_PTR(&mp_vou_get_content_obj) },
     { MP_ROM_QSTR(MP_QSTR_get_signature), MP_ROM_PTR(&mp_vou_get_signature_obj) },
     { MP_ROM_QSTR(MP_QSTR_get_signature_alg), MP_ROM_PTR(&mp_vou_get_signature_alg_obj) },
+#if MICROPY_PY_VOUCHER_DEBUG
+    { MP_ROM_QSTR(MP_QSTR_debug_dump), MP_ROM_PTR(&mp_vou_dump_obj) },
+#endif
 };
 
 MP_DEFINE_CONST_DICT(voucher_locals_dict, voucher_locals_dict_table);
@@ -460,6 +461,11 @@ STATIC const mp_rom_map_elem_t mp_module_voucher_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_SA_ES384), MP_ROM_INT(SA_ES384) },
     { MP_ROM_QSTR(MP_QSTR_SA_ES512), MP_ROM_INT(SA_ES512) },
     { MP_ROM_QSTR(MP_QSTR_SA_PS256), MP_ROM_INT(SA_PS256) },
+#if MICROPY_PY_VOUCHER_DEBUG
+    { MP_ROM_QSTR(MP_QSTR_debug_demo), MP_ROM_PTR(&debug_demo_obj) },
+    // ...
+    // ...
+#endif
 };
 
 STATIC MP_DEFINE_CONST_DICT(mp_module_voucher_globals, mp_module_voucher_globals_table);

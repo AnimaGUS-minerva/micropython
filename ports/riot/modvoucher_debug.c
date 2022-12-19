@@ -1,19 +1,24 @@
 #include "py/mpconfig.h"
 #include "py/objstr.h"
 #include "py/runtime.h"
-
 #include "stdio.h"
 #include "string.h"
 #include "modvoucher.h"
 
 #if MICROPY_PY_VOUCHER_DEBUG
 
-STATIC mp_obj_t vd_demo(void) {
-    printf("[modvoucher.c] vd_demo(): ^^\n");
+//STATIC mp_obj_t vd_demo(void) {
+//    printf("[modvoucher.c] vd_demo(): ^^\n");
+//
+//    return mp_const_none;
+//}
+//STATIC MP_DEFINE_CONST_FUN_OBJ_0(vd_demo_obj, vd_demo);
+STATIC mp_obj_t demo(void) {
+    printf("[modvoucher.c] demo(): ^^\n");
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(vd_demo_obj, vd_demo);
+MP_DEFINE_CONST_FUN_OBJ_0(debug_demo_obj, demo);
 
 STATIC mp_obj_t vd_test_ffi(void) {
     printf("vd_test_ffi(): ^^\n");
@@ -191,7 +196,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(vd_validate_obj, 1, 2, vd_validate);
 
 STATIC const mp_rom_map_elem_t mp_module_voucher_debug_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_voucher_debug) },
-    { MP_ROM_QSTR(MP_QSTR_vd_demo), MP_ROM_PTR(&vd_demo_obj) },
+    //{ MP_ROM_QSTR(MP_QSTR_vd_demo), MP_ROM_PTR(&vd_demo_obj) },
     { MP_ROM_QSTR(MP_QSTR_vd_test_ffi), MP_ROM_PTR(&vd_test_ffi_obj) },
     { MP_ROM_QSTR(MP_QSTR_vd_get_vch_jada), MP_ROM_PTR(&vd_get_vch_jada_obj) },
     { MP_ROM_QSTR(MP_QSTR_vd_get_vch_F2_00_02), MP_ROM_PTR(&vd_get_vch_F2_00_02_obj) },

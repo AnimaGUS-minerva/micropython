@@ -138,7 +138,9 @@ extern const struct _mp_obj_module_t mp_module_usocket;
 extern const struct _mp_obj_module_t mp_module_riot;
 #ifdef CUSTOM_BOARD
 extern const struct _mp_obj_module_t mp_module_voucher;
+  #if MICROPY_PY_VOUCHER_DEBUG
 extern const struct _mp_obj_module_t mp_module_voucher_debug;
+  #endif
 #endif
 extern const struct _mp_obj_module_t mp_module_xtimer;
 
