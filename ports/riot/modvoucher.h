@@ -7,8 +7,6 @@ extern const mp_obj_type_t voucher_vrq_type;
 extern const mp_obj_type_t voucher_vch_type;
 
 #if MICROPY_PY_VOUCHER_DEBUG
-extern const mp_obj_module_t mp_module_voucher_debug; // !!!!!! to remove
-
 MP_DECLARE_CONST_FUN_OBJ_0(debug_demo_obj);
 MP_DECLARE_CONST_FUN_OBJ_0(debug_test_ffi_obj);
 MP_DECLARE_CONST_FUN_OBJ_0(debug_get_vch_jada_obj);

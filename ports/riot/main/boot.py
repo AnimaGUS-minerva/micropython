@@ -1,19 +1,11 @@
 import voucher
-from voucher import *  # for `{ATTR,SA}_*` constants
+from voucher import *  # for `{ATTR,SA}_*` constants, `debug_*()` methods
 import gc
 
 #print('dir(voucher):', dir(voucher))
 help(voucher)
 
-#
-
-### TODOs: "reorganize the debug methods"
-# - move the debug methods to `mp_module_voucher_globals_table`
-#     e.g. voucher_debug.vd_*() -> voucher.debug_*()
-# - rename modvoucher_debug.c -> voucher_debug.c
-# - remove `voucher_debug` module
-
-print('debug_demo():', voucher.debug_demo())
+print('debug_demo():', debug_demo())  # voucher.debug_demo
 
 #
 
