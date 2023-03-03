@@ -30,11 +30,11 @@ else ifeq ($(CUSTOM_BOARD),native)
     CFLAGS += -DCUSTOM_BOARD -DCUSTOM_BOARD_NATIVE
 endif
 
-INCLUDES += -I$(MP_BASE)/../include
+INCLUDES += -I$(MP_BASE)/../voucher/if/include
 ifeq ($(CUSTOM_BOARD),esp32)
-    ARCHIVES += $(MP_BASE)/../target/xtensa-esp32-none-elf/release/libvoucher_if.a
+    ARCHIVES += $(MP_BASE)/../voucher/if/target/xtensa-esp32-none-elf/release/libvoucher_if.a
 else ifeq ($(CUSTOM_BOARD),native)
-    ARCHIVES += $(MP_BASE)/../target/i686-unknown-linux-gnu/release/libvoucher_if.a
+    ARCHIVES += $(MP_BASE)/../voucher/if/target/i686-unknown-linux-gnu/release/libvoucher_if.a
 endif
 
 # Currently, linking 'libvoucher_if.a' requires references to:
