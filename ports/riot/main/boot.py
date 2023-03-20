@@ -1,1 +1,1 @@
-../../../../python-rfc8366-voucher/micropython/boot.py
+../../../../python-rfc8366-voucher/tests/batch.py
