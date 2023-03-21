@@ -34,12 +34,16 @@ CFLAGS += -std=gnu99 -DNDEBUG $(INC) $(Wno)
 
 FROZEN_DIR = scripts
 
+PYTHON_VOUCHER_DIR := ../../../python-rfc8366-voucher
+
 CUSTOM_BOARD ?= native
 ifeq ($(CUSTOM_BOARD),esp32)
 SRC_C = $(wildcard *.c) \
 	shared/runtime/pyexec.c \
 	shared/readline/readline.c \
 	ports/esp32/gccollect.c \
+	$(PYTHON_VOUCHER_DIR)/micropython/modvoucher.c \
+	$(PYTHON_VOUCHER_DIR)/micropython/voucher_debug.c \
 	$(BUILD)/frozen.c
 else ifeq ($(CUSTOM_BOARD),native)
 SRC_C = $(wildcard *.c) \
@@ -47,6 +51,8 @@ SRC_C = $(wildcard *.c) \
 	shared/readline/readline.c \
 	ports/unix/gccollect.c \
 	shared/runtime/gchelper_generic.c \
+	$(PYTHON_VOUCHER_DIR)/micropython/modvoucher.c \
+	$(PYTHON_VOUCHER_DIR)/micropython/voucher_debug.c \
 	$(BUILD)/frozen.c
 endif
 
@@ -64,6 +70,7 @@ GENHDR_DIR = ../../genhdr
 main:
 	@if [ ! -e RIOT ]; then git clone https://github.com/RIOT-OS/RIOT; fi
 	mkdir -p $(GENHDR_DIR) && touch $(GENHDR_DIR)/qstrdefs.generated.h
+	cp $(PYTHON_VOUCHER_DIR)/tests/batch.py main/boot.py
 	RIOTBASE=$(CURDIR)/RIOT make -C main
 
 clean:

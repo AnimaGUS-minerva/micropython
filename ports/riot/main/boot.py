@@ -1,1 +1,0 @@
-../../../../python-rfc8366-voucher/tests/batch.py

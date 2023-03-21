@@ -30,11 +30,13 @@ else ifeq ($(CUSTOM_BOARD),native)
     CFLAGS += -DCUSTOM_BOARD -DCUSTOM_BOARD_NATIVE
 endif
 
-INCLUDES += -I$(MP_BASE)/../python-rfc8366-voucher/voucher/if/include
+PYTHON_VOUCHER_IF_DIR := $(MP_BASE)/../python-rfc8366-voucher/voucher/if
+
+INCLUDES += -I$(PYTHON_VOUCHER_IF_DIR)/include
 ifeq ($(CUSTOM_BOARD),esp32)
-    ARCHIVES += $(MP_BASE)/../python-rfc8366-voucher/voucher/if/target/xtensa-esp32-none-elf/release/libvoucher_if.a
+    ARCHIVES += $(PYTHON_VOUCHER_IF_DIR)/target/xtensa-esp32-none-elf/release/libvoucher_if.a
 else ifeq ($(CUSTOM_BOARD),native)
-    ARCHIVES += $(MP_BASE)/../python-rfc8366-voucher/voucher/if/target/i686-unknown-linux-gnu/release/libvoucher_if.a
+    ARCHIVES += $(PYTHON_VOUCHER_IF_DIR)/target/i686-unknown-linux-gnu/release/libvoucher_if.a
 endif
 
 # Currently, linking 'libvoucher_if.a' requires references to:
