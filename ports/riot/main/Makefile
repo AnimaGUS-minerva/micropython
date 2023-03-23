@@ -30,7 +30,10 @@ else ifeq ($(CUSTOM_BOARD),native)
     CFLAGS += -DCUSTOM_BOARD -DCUSTOM_BOARD_NATIVE
 endif
 
-PYTHON_VOUCHER_IF_DIR := $(MP_BASE)/../python-rfc8366-voucher/voucher/if
+ifndef PYTHON_VOUCHER_REPO
+$(error PYTHON_VOUCHER_REPO is not set)
+endif
+PYTHON_VOUCHER_IF_DIR := $(PYTHON_VOUCHER_REPO)/voucher/if
 
 INCLUDES += -I$(PYTHON_VOUCHER_IF_DIR)/include
 ifeq ($(CUSTOM_BOARD),esp32)

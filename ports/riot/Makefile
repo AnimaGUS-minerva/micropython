@@ -34,7 +34,10 @@ CFLAGS += -std=gnu99 -DNDEBUG $(INC) $(Wno)
 
 FROZEN_DIR = scripts
 
-PYTHON_VOUCHER_DIR := ../../../python-rfc8366-voucher
+ifndef PYTHON_VOUCHER_REPO
+$(error PYTHON_VOUCHER_REPO is not set)
+endif
+PYTHON_VOUCHER_DIR := $(PYTHON_VOUCHER_REPO)
 
 CUSTOM_BOARD ?= native
 ifeq ($(CUSTOM_BOARD),esp32)
