@@ -64,7 +64,7 @@ RIOT_TERMINAL ?= miniterm
 
 # enable modmachine support for peripherals if available
 FEATURES_OPTIONAL += periph_adc
-FEATURES_OPTIONAL += periph_spi
+#@@ FEATURES_OPTIONAL += periph_spi
 
 # For now `examples/%/tests" still rely on the test applicaton being reset after
 # a terminal is opened to synchronize.
